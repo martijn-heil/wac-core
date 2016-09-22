@@ -1,0 +1,83 @@
+buildscript {
+    ext.kotlin_version = '1.0.2'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+import org.apache.tools.ant.filters.*
+
+group = 'tk.martijn-heil.wac-core'
+version = '1.0-SNAPSHOT'
+description = "Well"
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+defaultTasks 'clean', 'build'
+
+//noinspection GroovyAssignabilityCheck
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+shadowJar {
+    [project.configurations.compile]
+    classifier = null
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "http://repo.extendedclip.com/content/repositories/placeholderapi/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://maven.sk89q.com/repo/" }
+
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+    mavenLocal()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.google.guava:guava:19.0'
+    compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
+
+    compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.10.2-R0.1-SNAPSHOT') //{ changing = true }
+    compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.10.2-R0.1-SNAPSHOT') //{ changing = true }
+}
+
+//noinspection GroovyAssignabilityCheck
+processResources {
+    filter ReplaceTokens, tokens: [
+            "version": project.version
+    ]
+}
+
+//noinspection GroovyAssignabilityCheck
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+    main.java.srcDirs += 'src/main/java'
+}
