@@ -21,6 +21,7 @@ class WacCore : JavaPlugin() {
 
         val flyway = Flyway();
         flyway.setDataSource(dbUrl, dbUsername, dbPassword);
+        flyway.classLoader = this.classLoader;
         flyway.migrate();
 
         dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);

@@ -26,7 +26,7 @@ apply plugin: 'maven'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'clean', 'build'
+defaultTasks 'clean', 'shadow'
 
 //noinspection GroovyAssignabilityCheck
 configurations.all {
