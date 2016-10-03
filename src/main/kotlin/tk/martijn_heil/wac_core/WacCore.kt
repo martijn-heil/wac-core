@@ -14,16 +14,16 @@ class WacCore : JavaPlugin() {
         saveDefaultConfig();
 
         val dbUrl = config.getString("db.url");
-        val dbUser = config.getString("db.username");
+        val dbUsername = config.getString("db.username");
         val dbPassword = config.getString("db.password")
         // Storing the password in a char array doesn't improve much..
         // it's stored in plaintext in the "config" object anyway.. :/
 
         val flyway = Flyway();
-        flyway.setDataSource(dbUrl, dbUser, dbPassword);
+        flyway.setDataSource(dbUrl, dbUsername, dbPassword);
         flyway.migrate();
 
-        dbconn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
 //        val statement = dbconn.prepareStatement("SELECT * FROM panters;");
 //        val result = statement.executeQuery();
 //        val rank = result.getString("rank");
