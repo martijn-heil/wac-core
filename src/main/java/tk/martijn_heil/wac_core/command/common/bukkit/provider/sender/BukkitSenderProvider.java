@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class BukkitSenderProvider<T> implements Provider<T>
 {
 
