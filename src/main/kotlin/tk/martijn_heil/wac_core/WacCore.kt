@@ -11,6 +11,8 @@ import java.util.*
 class WacCore : JavaPlugin() {
 
     override fun onEnable() {
+        saveDefaultConfig();
+
         val dbUrl = config.getString("db.url");
         val dbUser = config.getString("db.user");
         val dbPassword = config.getString("db.password")
