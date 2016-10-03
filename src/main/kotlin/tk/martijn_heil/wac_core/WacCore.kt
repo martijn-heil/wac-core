@@ -25,13 +25,6 @@ class WacCore : JavaPlugin() {
         flyway.migrate();
 
         dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-//        val statement = dbconn.prepareStatement("SELECT * FROM panters;");
-//        val result = statement.executeQuery();
-//        val rank = result.getString("rank");
-//
-//        if(rank.equals("opper-panter")) {
-//            logger.info("Jusshh! ;D")
-//        }
         messages = ResourceBundle.getBundle("messages.messages");
 
         Bukkit.getPluginManager().registerEvents(ItemPropertyListener(), this);
