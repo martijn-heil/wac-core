@@ -4,7 +4,7 @@ package tk.martijn_heil.wac_core.command.common.bukkit.provider;
 import com.sk89q.intake.parametric.AbstractModule;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import tk.martijn_heil.elytraoptions.command.common.TargetOrSender;
+import tk.martijn_heil.wac_core.command.common.TargetOrSender;
 
 public class BukkitModule extends AbstractModule
 {

@@ -6,7 +6,7 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import tk.martijn_heil.elytraoptions.command.common.Sender;
+import tk.martijn_heil.wac_core.command.common.Sender;
 
 public class BukkitSenderModule extends AbstractModule
 {

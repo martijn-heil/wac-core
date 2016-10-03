@@ -2,7 +2,7 @@ package tk.martijn_heil.wac_core.command.common;
 
 
 import com.sk89q.intake.parametric.AbstractModule;
-import tk.martijn_heil.elytraoptions.command.common.provider.ToggleProvider;
+import tk.martijn_heil.wac_core.command.common.provider.ToggleProvider;
 
 public class CommonModule extends AbstractModule
 {

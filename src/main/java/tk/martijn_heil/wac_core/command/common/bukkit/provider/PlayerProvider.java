@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
-import tk.martijn_heil.elytraoptions.command.common.TargetOrSender;
+import tk.martijn_heil.wac_core.command.common.TargetOrSender;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
