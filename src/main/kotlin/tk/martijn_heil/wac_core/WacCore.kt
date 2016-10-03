@@ -14,7 +14,7 @@ class WacCore : JavaPlugin() {
         saveDefaultConfig();
 
         val dbUrl = config.getString("db.url");
-        val dbUser = config.getString("db.user");
+        val dbUser = config.getString("db.username");
         val dbPassword = config.getString("db.password")
         // Storing the password in a char array doesn't improve much..
         // it's stored in plaintext in the "config" object anyway.. :/
