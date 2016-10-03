@@ -64,9 +64,11 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.google.guava:guava:19.0'
     compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
+    compile 'org.flywaydb:flyway-core:4.0.3'
 
-    compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.10.2-R0.1-SNAPSHOT') //{ changing = true }
-    compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.10.2-R0.1-SNAPSHOT') //{ changing = true }
+
+    compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.10.2-R0.1-SNAPSHOT') { changing = true }
+    compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.10.2-R0.1-SNAPSHOT') { changing = true }
 }
 
 //noinspection GroovyAssignabilityCheck
