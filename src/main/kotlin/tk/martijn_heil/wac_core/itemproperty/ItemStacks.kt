@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
  * *
  * @return Returns true if the [ItemStack] is soulbound.
  * *
- * @throws NullPointerException if item is null.
  */
 fun isSoulBound(item: ItemStack): Boolean {
     return item.itemMeta != null && item.itemMeta.lore != null &&
@@ -22,7 +21,6 @@ fun isSoulBound(item: ItemStack): Boolean {
  * *
  * @return true if this [ItemStack] is unbreakable.
  * *
- * @throws NullPointerException if item is null.
  */
 fun isUnbreakable(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
@@ -37,7 +35,6 @@ fun isUnbreakable(item: ItemStack): Boolean {
  * *
  * @return true if the [ItemStack] is use allowed.
  * *
- * @throws NullPointerException if item is null.
  */
 fun isUseAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
@@ -52,7 +49,6 @@ fun isUseAllowed(item: ItemStack): Boolean {
  * *
  * @return true if the [ItemStack] is combat allowed.
  * *
- * @throws NullPointerException if item is null.
  */
 fun isCombatAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
@@ -67,7 +63,6 @@ fun isCombatAllowed(item: ItemStack): Boolean {
  * *
  * @return true if the [ItemStack] is equip allowed.
  * *
- * @throws NullPointerException if item is null.
  */
 fun isEquipAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
@@ -82,7 +77,6 @@ fun isEquipAllowed(item: ItemStack): Boolean {
  * *
  * @return true if the [ItemStack] is consume allowed.
  * *
- * @throws NullPointerException if the item is null.
  */
 fun isConsumeAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
