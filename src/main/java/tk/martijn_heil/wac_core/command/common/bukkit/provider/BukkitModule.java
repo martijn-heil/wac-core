@@ -4,7 +4,7 @@ package tk.martijn_heil.wac_core.command.common.bukkit.provider;
 import com.sk89q.intake.parametric.AbstractModule;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import tk.martijn_heil.wac_core.command.common.TargetOrSender;
+import tk.martijn_heil.wac_core.command.common.Target;
 
 public class BukkitModule extends AbstractModule
 {
@@ -22,6 +22,6 @@ public class BukkitModule extends AbstractModule
         bind(Server.class).toInstance(server);
         bind(Player.class).toProvider(new PlayerProvider(server, false));
 
-        bind(Player.class).annotatedWith(TargetOrSender.class).toProvider(new PlayerProvider(server, true));
+        bind(Player.class).annotatedWith(Target.class).toProvider(new PlayerProvider(server, true));
     }
 }

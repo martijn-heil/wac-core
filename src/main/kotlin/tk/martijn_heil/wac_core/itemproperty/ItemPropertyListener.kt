@@ -1,20 +1,20 @@
-package tk.martijn_heil.wac_core.itemproperty
+package tk.martijn_heil.wac_core.itemproperty;
 
-import isSoulBound
-import isUnbreakable
-import org.bukkit.ChatColor
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
-import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.inventory.*
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerItemDamageEvent
-import tk.martijn_heil.wac_core.WacCore
+import isSoulBound;
+import isUnbreakable;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import tk.martijn_heil.wac_core.WacCore;
 
 
 class ItemPropertyListener : Listener {

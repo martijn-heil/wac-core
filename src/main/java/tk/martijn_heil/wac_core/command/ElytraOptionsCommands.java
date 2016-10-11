@@ -5,7 +5,7 @@ public class ElytraOptionsCommands
 {
 //    @Command(aliases = "status", desc = "Show your player status", usage = "<value> <player=self>")
 //    @Require("elytraoptions.tk.martijn_heil.wac_core.command.status")
-//    public void status(@Sender CommandSender sender, @TargetOrSender("elytraoptions.tk.martijn_heil.wac_core.command.status.other")EPlayer about)
+//    public void status(@Sender CommandSender sender, @Target("elytraoptions.tk.martijn_heil.wac_core.command.status.other")EPlayer about)
 //    {
 //        double remainingAirtime = ElytraOptions.getInstance().getConfig().getInt("airtime.max") - about.getAirTime();
 //
@@ -20,28 +20,28 @@ public class ElytraOptionsCommands
 //
 //    @Command(aliases = "boost", desc = "Show your player status", usage = "<value> <player=self>")
 //    @Require("elytraoptions.tk.martijn_heil.wac_core.command.boost")
-//    public void boost(boolean value, @TargetOrSender("elytraoptions.tk.martijn_heil.wac_core.command.boost.other") EPlayer ep)
+//    public void boost(boolean value, @Target("elytraoptions.tk.martijn_heil.wac_core.command.boost.other") EPlayer ep)
 //    {
 //        ep.setUsingBoost(value);
 //    }
 //
 //    @Command(aliases = "infinite", desc = "Show your player status", usage = "<value> <player=self>")
 //    @Require("elytraoptions.tk.martijn_heil.wac_core.command.infinite")
-//    public void infinite(boolean value, @TargetOrSender("elytraoptions.tk.martijn_heil.wac_core.command.infinite.other") EPlayer ep)
+//    public void infinite(boolean value, @Target("elytraoptions.tk.martijn_heil.wac_core.command.infinite.other") EPlayer ep)
 //    {
 //        ep.setUsingInfinite(value);
 //    }
 //
 //    @Command(aliases = "trail", desc = "Show your player status", usage = "<value> <player=self>")
 //    @Require("elytraoptions.tk.martijn_heil.wac_core.command.trail")
-//    public void trail(boolean value, @TargetOrSender("elytraoptions.tk.martijn_heil.wac_core.command.trial.other") EPlayer ep)
+//    public void trail(boolean value, @Target("elytraoptions.tk.martijn_heil.wac_core.command.trial.other") EPlayer ep)
 //    {
 //        ep.setUsingTrail(value);
 //    }
 //
 //    @Command(aliases = "sound", desc = "Show your player status", usage = "<value> <player=self>")
 //    @Require("elytraoptions.tk.martijn_heil.wac_core.command.sound")
-//    public void sound(boolean value, @TargetOrSender("elytraoptions.tk.martijn_heil.wac_core.command.sound.other") EPlayer ep)
+//    public void sound(boolean value, @Target("elytraoptions.tk.martijn_heil.wac_core.command.sound.other") EPlayer ep)
 //    {
 //        ep.setUsingSound(value);
 //    }

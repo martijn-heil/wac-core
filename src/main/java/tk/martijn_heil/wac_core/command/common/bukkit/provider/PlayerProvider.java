@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
-import tk.martijn_heil.wac_core.command.common.TargetOrSender;
+import tk.martijn_heil.wac_core.command.common.Target;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
@@ -48,9 +48,9 @@ public class PlayerProvider implements Provider<Player>
         {
             for (Annotation annotation : list)
             {
-                if(annotation instanceof TargetOrSender)
+                if(annotation instanceof Target)
                 {
-                    String requiredPermission = ((TargetOrSender) annotation).value();
+                    String requiredPermission = ((Target) annotation).value();
 
                     if(!requiredPermission.isEmpty())
                     {

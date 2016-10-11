@@ -17,6 +17,6 @@ public class ElytraOptionsModule// extends AbstractModule
 //    {
 //        bind(EPlayer.class).toProvider(new EPlayerProvider(server, new PlayerProvider(server, false)));
 //
-//        bind(EPlayer.class).annotatedWith(TargetOrSender.class).toProvider(new EPlayerProvider(server, new PlayerProvider(server, true)));
+//        bind(EPlayer.class).annotatedWith(Target.class).toProvider(new EPlayerProvider(server, new PlayerProvider(server, true)));
 //    }
 }

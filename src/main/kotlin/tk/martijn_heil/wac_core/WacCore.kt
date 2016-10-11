@@ -13,8 +13,10 @@ import java.util.*
 class WacCore : JavaPlugin() {
 
     override fun onEnable() {
+        logger.fine("Saving default config..");
         saveDefaultConfig();
 
+        logger.info("Migrating database if needed..");
         val dbUrl = config.getString("db.url");
         val dbUsername = config.getString("db.username");
         val dbPassword = config.getString("db.password");
@@ -42,11 +44,8 @@ class WacCore : JavaPlugin() {
 
         messages = ResourceBundle.getBundle("messages.messages");
 
+        logger.info("Registering event listeners..");
         Bukkit.getPluginManager().registerEvents(ItemPropertyListener(), this);
-    }
-
-    override fun onDisable() {
-
     }
 
     companion object {
