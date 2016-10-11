@@ -1,4 +1,4 @@
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Check if an [ItemStack] is soulbound.
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
  */
 fun isSoulBound(item: ItemStack): Boolean {
     return item.itemMeta != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oSoulbound")
+            item.itemMeta.lore.contains("§6§oSoulbound");
 }
 
 
@@ -26,7 +26,7 @@ fun isSoulBound(item: ItemStack): Boolean {
  */
 fun isUnbreakable(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oUnbreakable")
+            item.itemMeta.lore.contains("§6§oUnbreakable");
 }
 
 
@@ -41,7 +41,7 @@ fun isUnbreakable(item: ItemStack): Boolean {
  */
 fun isUseAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oUse-Allowed")
+            item.itemMeta.lore.contains("§6§oUse-Allowed");
 }
 
 
@@ -56,7 +56,7 @@ fun isUseAllowed(item: ItemStack): Boolean {
  */
 fun isCombatAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oCombat-Allowed")
+            item.itemMeta.lore.contains("§6§oCombat-Allowed");
 }
 
 
@@ -71,7 +71,7 @@ fun isCombatAllowed(item: ItemStack): Boolean {
  */
 fun isEquipAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oEquip-Allowed")
+            item.itemMeta.lore.contains("§6§oEquip-Allowed");
 }
 
 
@@ -86,7 +86,7 @@ fun isEquipAllowed(item: ItemStack): Boolean {
  */
 fun isConsumeAllowed(item: ItemStack): Boolean {
     return item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§6§oConsume-Allowed")
+            item.itemMeta.lore.contains("§6§oConsume-Allowed");
 }
 
 
@@ -104,6 +104,6 @@ fun isConsumeAllowed(item: ItemStack): Boolean {
  */
 fun isPartOfKit(item: ItemStack?, kitName: String): Boolean {
     return item != null && item.itemMeta.lore != null && item.itemMeta.lore != null &&
-            item.itemMeta.lore.contains("§b§o" + kitName)
+            item.itemMeta.lore.contains("§b§o" + kitName);
     // NOTE: §b instead of §6
 }

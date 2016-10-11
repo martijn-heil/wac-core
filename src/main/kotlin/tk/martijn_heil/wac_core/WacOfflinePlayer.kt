@@ -1,8 +1,8 @@
-package tk.martijn_heil.wac_core
+package tk.martijn_heil.wac_core;
 
-import org.bukkit.OfflinePlayer
-import tk.martijn_heil.wac_core.playerclass.PlayerClass
-import java.io.Serializable
+import org.bukkit.OfflinePlayer;
+import tk.martijn_heil.wac_core.playerclass.PlayerClass;
+import java.io.Serializable;
 
 
 open class WacOfflinePlayer(val offlinePlayer: OfflinePlayer) : Serializable {

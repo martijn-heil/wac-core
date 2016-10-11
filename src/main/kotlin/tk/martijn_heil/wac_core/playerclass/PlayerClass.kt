@@ -1,4 +1,4 @@
-package tk.martijn_heil.wac_core.playerclass
+package tk.martijn_heil.wac_core.playerclass;
 
 
 class PlayerClass(val id: String,

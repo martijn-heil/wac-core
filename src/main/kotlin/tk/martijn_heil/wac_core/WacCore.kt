@@ -1,14 +1,14 @@
-package tk.martijn_heil.wac_core
+package tk.martijn_heil.wac_core;
 
-import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
-import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.FlywayException
-import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.SQLException
-import java.util.*
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
+import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.*;
 
 class WacCore : JavaPlugin() {
 
