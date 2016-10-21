@@ -44,6 +44,7 @@ class WacCore : JavaPlugin() {
         val flyway = Flyway();
         flyway.setDataSource(dbUrl, dbUsername, dbPassword);
         flyway.classLoader = this.classLoader;
+        flyway.isBaselineOnMigrate = true;
         try {
             flyway.migrate();
         } catch (ex: FlywayException) {
