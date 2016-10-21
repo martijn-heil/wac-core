@@ -64,10 +64,17 @@ class WacCore : JavaPlugin() {
 
         logger.info("Registering event listeners..");
         Bukkit.getPluginManager().registerEvents(ItemPropertyListener(), this);
+        Bukkit.getPluginManager().registerEvents(MainListener(), this);
     }
 
     companion object {
         lateinit var dbconn: Connection;
         lateinit var messages: ResourceBundle;
+    }
+
+    enum class Permission(val str: String) {
+        BYPASS_TNTLIMIT("wac-core.bypass.tntlimit");
+
+        override fun toString() = str
     }
 }
