@@ -27,10 +27,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Logger
 
 class WacCore : JavaPlugin() {
 
     override fun onEnable() {
+        Companion.logger = logger;
         logger.fine("Saving default config..");
         saveDefaultConfig();
 
@@ -71,6 +73,7 @@ class WacCore : JavaPlugin() {
     companion object {
         lateinit var dbconn: Connection;
         lateinit var messages: ResourceBundle;
+        lateinit var logger: Logger
     }
 
     enum class Permission(val str: String) {
