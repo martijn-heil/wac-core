@@ -67,7 +67,7 @@ class WacCore : JavaPlugin() {
 
         logger.info("Registering event listeners..");
         Bukkit.getPluginManager().registerEvents(ItemPropertyListener(), this);
-        Bukkit.getPluginManager().registerEvents(MainListener(), this);
+        Bukkit.getPluginManager().registerEvents(MaxOfItemListener(), this);
     }
 
     companion object {
@@ -77,7 +77,7 @@ class WacCore : JavaPlugin() {
     }
 
     enum class Permission(val str: String) {
-        BYPASS_TNTLIMIT("wac-core.bypass.tntlimit");
+        BYPASS_ITEMLIMIT("wac-core.bypass.itemlimit");
 
         override fun toString() = str
     }
