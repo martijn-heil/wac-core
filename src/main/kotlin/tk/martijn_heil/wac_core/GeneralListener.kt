@@ -22,17 +22,20 @@
  * SOFTWARE.
  */
 
-package tk.martijn_heil.wac_core.command.common;
+package tk.martijn_heil.wac_core
+
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityTargetEvent
 
 
-import com.sk89q.intake.parametric.annotation.Classifier;
+class GeneralListener() : Listener {
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Classifier
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Toggle
-{
-
+    @EventHandler(ignoreCancelled = true)
+    fun onEntityTarget(e: EntityTargetEvent) {
+        if (e.target is Player && WacPlayer(e.target as Player).kingdom == Kingdom.UNDEAD ) {
+            e.isCancelled = true
+        }
+    }
 }

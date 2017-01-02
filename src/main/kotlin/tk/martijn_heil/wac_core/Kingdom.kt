@@ -22,17 +22,21 @@
  * SOFTWARE.
  */
 
-package tk.martijn_heil.wac_core.command.common;
+package tk.martijn_heil.wac_core
 
 
-import com.sk89q.intake.parametric.annotation.Classifier;
+enum class Kingdom(val kingdomName: String, val groupName: String = kingdomName) {
+    UNDEAD("Kronoth"),
+    HUMAN_1("Astilafia"),
+    HUMAN_2("Ostrain"),
+    HUMAN_3("Volcair"),
+    DWARVES(""),
+    ELFS("");
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Classifier
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Toggle
-{
-
+    companion object {
+        fun fromGroupName(groupName: String): Kingdom? {
+            Kingdom.values().forEach { if(it.groupName == groupName) return it }
+            return null;
+        }
+    }
 }

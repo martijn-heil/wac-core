@@ -46,6 +46,7 @@ repositories {
     maven { url "http://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "http://maven.sk89q.com/repo/" }
+    maven { url "http://nexus.hc.to/content/repositories/pub_releases" }
 
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -66,6 +67,7 @@ dependencies {
     compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
     compile 'org.flywaydb:flyway-core:4.0.3'
 
+    compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
 
     compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.10.2-R0.1-SNAPSHOT') { changing = true }
     compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.10.2-R0.1-SNAPSHOT') { changing = true }
