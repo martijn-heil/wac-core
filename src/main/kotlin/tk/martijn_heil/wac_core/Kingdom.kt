@@ -30,8 +30,9 @@ enum class Kingdom(val kingdomName: String, val groupName: String = kingdomName)
     HUMAN_1("Astilafia"),
     HUMAN_2("Ostrain"),
     HUMAN_3("Volcair"),
-    DWARVES(""),
-    ELFS("");
+    DWARVES("Dhar' Guldaruhm"),
+    ORCS("Zorgirhgoth"),
+    OGRES("Vrewikur");
 
     companion object {
         fun fromGroupName(groupName: String): Kingdom? {
