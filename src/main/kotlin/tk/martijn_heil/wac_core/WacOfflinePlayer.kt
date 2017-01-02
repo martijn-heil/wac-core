@@ -32,6 +32,9 @@ import java.io.Serializable
 
 open class WacOfflinePlayer(val offlinePlayer: OfflinePlayer) : Serializable {
 
+    // Blame Feike for insisting to use PermissionsEx for semantic grouping of players..
+    // Which is a pretty bad design choice, as you are mixing semantic grouping with permission grouping.
+    // It leads to pretty ugly code too.
     var kingdom: Kingdom?
         set(kingdom) {
             val rsp = Bukkit.getServer().servicesManager.getRegistration(Permission::class.java) ?: throw Exception("Couldn't get permission service.");
