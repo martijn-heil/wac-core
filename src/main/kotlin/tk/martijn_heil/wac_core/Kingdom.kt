@@ -39,17 +39,19 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
         }
 
 
-    fun getMembers(): List<WacPlayer> {
-        val members = ArrayList<WacPlayer>()
-        for (offlinePlayer in Bukkit.getServer().offlinePlayers) {
-            val pl = WacPlayer(offlinePlayer)
-            if (pl.kingdom == this) members.add(pl)
+    val members: List<WacPlayer>
+        get() {
+            val members = ArrayList<WacPlayer>()
+            for (offlinePlayer in Bukkit.getServer().offlinePlayers) {
+                val pl = WacPlayer(offlinePlayer)
+                if (pl.kingdom == this) members.add(pl)
+            }
+
+            return members
         }
 
-        return members
-    }
-
-    fun getLeader(): WacPlayer = WacPlayer(faction.leader.player)
+    val leader: WacPlayer
+        get() = WacPlayer(faction.leader.player)
 
     companion object {
         fun fromFaction(f: Faction): Kingdom? {
