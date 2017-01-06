@@ -33,6 +33,8 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+
+
 shadowJar {
     [project.configurations.compile]
     classifier = null
@@ -53,6 +55,7 @@ repositories {
     mavenLocal()
 }
 
+//noinspection GroovyAssignabilityCheck
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -66,6 +69,10 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
     compile 'org.flywaydb:flyway-core:4.0.3'
+
+    //compile files('lib/Factions.jar')
+    //compile files('lib/MassiveCore')
+    compileOnly fileTree(dir: 'lib', include: '*.jar')
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
 

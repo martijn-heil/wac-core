@@ -1,25 +1,19 @@
 /*
- * MIT License
+ *     wac-core
+ *     Copyright (C) 2016 Martijn Heil
  *
- * Copyright (c) 2016 Martijn Heil
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package tk.martijn_heil.wac_core
@@ -50,7 +44,7 @@ class MaxOfItemListener() : Listener {
 
         // If the player tries to drag and drop a single item into their inventory, or if they drag and drop an entire stack into their inventory.
         // So, if the player has no TNT in his inventory yet, but tries to put an entire stack in at once, that is also prevented.
-        if(e.clickedInventory == e.whoClicked.inventory && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str)) {
+        if(e.inventory == e.whoClicked.inventory && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str)) {
             maxPerPlayerInventory.forEach {
                 val m = it.key
                 val maxAmount = it.value
@@ -95,7 +89,7 @@ class MaxOfItemListener() : Listener {
             val maxAmount = it.value
 
             // If the player is trying to shift click TNT into their inventory.
-            if(e.clickedInventory != e.whoClicked.inventory && (e.click == ClickType.SHIFT_LEFT || e.click == ClickType.SHIFT_RIGHT)
+            if(e.inventory != e.whoClicked.inventory && (e.click == ClickType.SHIFT_LEFT || e.click == ClickType.SHIFT_RIGHT)
                     && e.currentItem.type == m && (e.whoClicked.inventory.contains(m, maxAmount) || (e.currentItem.amount + e.currentItem.amount) > maxAmount)
                     && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str)) {
                 e.isCancelled = true
@@ -137,7 +131,7 @@ class MaxOfItemListener() : Listener {
                         // Decrementing the amount directly via e.item.itemStack.amount-- does apperantly not work..
                         val i2 = e.item.itemStack.clone()
                         i2.amount -= maxAmount
-                        e.item.itemStack = i2;
+                        e.item.itemStack = i2
                     }
                 }
             }
@@ -145,13 +139,13 @@ class MaxOfItemListener() : Listener {
     }
 
     fun countItemsPlacedByInventoryDrag(e: InventoryDragEvent): Int {
-        var count: Int = 0;
+        var count: Int = 0
 
         e.newItems.forEach {
             count += it.value.amount
         }
 
-        return count;
+        return count
     }
 
     fun itemsPlacedByInventoryDragContain(m: Material, e: InventoryDragEvent): Boolean {
@@ -163,7 +157,7 @@ class MaxOfItemListener() : Listener {
     }
 
     fun countItemsOfTypeInInventory(m: Material, i: Inventory): Int {
-        var count = 0;
+        var count = 0
 
         i.contents.forEach {
             if(it != null && it.type == m) {

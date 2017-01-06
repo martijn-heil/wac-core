@@ -2,3 +2,4 @@ name: wac-core
 version: @version@
 author: Ninjoh
 main: tk.martijn_heil.wac_core.WacCore
+depend: [Factions]
