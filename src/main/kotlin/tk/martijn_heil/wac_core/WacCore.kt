@@ -20,6 +20,8 @@ package tk.martijn_heil.wac_core
 
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener
 import java.sql.Connection
 import java.util.*
@@ -61,6 +63,18 @@ class WacCore : JavaPlugin() {
         for (player in Bukkit.getServer().onlinePlayers) {
             ensurePresenceInDatabase(player)
         }
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
+            val loc = Kingdom.UNDEAD.home
+            val radius = 120
+
+            Bukkit.getOnlinePlayers().forEach {
+                if(WacPlayer(it).kingdom != Kingdom.UNDEAD && it.location.toVector().distance(loc.toVector()) <= radius) {
+                    val effect = PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false)
+                    it.addPotionEffect(effect)
+                }
+            }
+        }, 0L, 20L)
     }
 
     companion object {
