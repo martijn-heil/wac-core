@@ -67,15 +67,16 @@ class WacCore : JavaPlugin() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
             val loc = Kingdom.UNDEAD.home
             val radius = 120
-            Bukkit.getOnlinePlayers().forEach {
-                if(WacPlayer(it).kingdom != Kingdom.UNDEAD && it.location.toVector().distance(loc.toVector()) <= radius) {
-                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 200, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 200, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 200, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 200, 1, false, false), true)
+
+            getPlayersInRadius(loc, radius).forEach {
+                if(WacPlayer(it).kingdom != Kingdom.UNDEAD) {
+                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 700, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 700, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 700, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 700, 1, false, false), true)
                 }
             }
-        }, 0L, 20L)
+        }, 0L, 600L)
     }
 
     companion object {

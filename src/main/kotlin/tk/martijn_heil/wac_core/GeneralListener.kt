@@ -21,14 +21,17 @@ package tk.martijn_heil.wac_core
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerGameModeChangeEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
@@ -80,6 +83,18 @@ class GeneralListener() : Listener {
     fun onPlayerChorusFruitTeleport(e: PlayerTeleportEvent) {
         if(e.cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT) {
             e.isCancelled = true
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    fun onUndeadUseSoundWand(e: PlayerInteractEvent) {
+        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && WacPlayer(e.player).kingdom == Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
+                e.player.inventory.itemInMainHand.hasItemMeta() && e.player.inventory.itemInMainHand.itemMeta.hasDisplayName() &&
+        e.player.inventory.itemInMainHand.itemMeta.displayName == ChatColor.GOLD.toString() + "SoundWand") {
+
+            getPlayersInRadius(e.player.location, 200).forEach {
+                it.playSound(it.location, Sound.ENTITY_WITCH_AMBIENT, 10.0f, 1.0f)
+            }
         }
     }
 }

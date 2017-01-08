@@ -19,8 +19,10 @@
 package tk.martijn_heil.wac_core
 
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
+import org.bukkit.entity.Player
 import java.text.MessageFormat
 import java.util.*
 
@@ -46,4 +48,14 @@ fun ensurePresenceInDatabase(offlinePlayer: OfflinePlayer) {
         stmnt2.setString(1, offlinePlayer.uniqueId.toString())
         stmnt2.executeUpdate()
     }
+}
+
+fun getPlayersInRadius(loc: Location, radius: Int): List<Player> {
+    val players = ArrayList<Player>()
+
+    Bukkit.getOnlinePlayers().forEach {
+        if(it.location.toVector().distance(loc.toVector()) <= radius) players.add(it)
+    }
+
+    return players
 }
