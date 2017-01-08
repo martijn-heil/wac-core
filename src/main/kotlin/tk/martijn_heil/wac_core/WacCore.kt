@@ -69,8 +69,10 @@ class WacCore : JavaPlugin() {
             val radius = 120
             Bukkit.getOnlinePlayers().forEach {
                 if(WacPlayer(it).kingdom != Kingdom.UNDEAD && it.location.toVector().distance(loc.toVector()) <= radius) {
-                    val effect = PotionEffect(PotionEffectType.BLINDNESS, 200, 1, false, false)
-                    it.addPotionEffect(effect, true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 200, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 200, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 200, 1, false, false), true)
+                    it.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 200, 1, false, false), true)
                 }
             }
         }, 0L, 20L)
