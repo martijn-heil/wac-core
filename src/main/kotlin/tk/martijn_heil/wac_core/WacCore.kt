@@ -67,11 +67,10 @@ class WacCore : JavaPlugin() {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
             val loc = Kingdom.UNDEAD.home
             val radius = 120
-
             Bukkit.getOnlinePlayers().forEach {
                 if(WacPlayer(it).kingdom != Kingdom.UNDEAD && it.location.toVector().distance(loc.toVector()) <= radius) {
-                    val effect = PotionEffect(PotionEffectType.BLINDNESS, 10, 1, false)
-                    it.addPotionEffect(effect)
+                    val effect = PotionEffect(PotionEffectType.BLINDNESS, 200, 1, false, false)
+                    it.addPotionEffect(effect, true)
                 }
             }
         }, 0L, 20L)
