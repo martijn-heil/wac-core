@@ -21,6 +21,7 @@ package tk.martijn_heil.wac_core
 import org.bukkit.ChatColor
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -50,7 +51,7 @@ class SignListener : Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onClickSign(e: PlayerInteractEvent) {
         if(e.hasBlock() && e.clickedBlock.state is Sign &&
                 (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {

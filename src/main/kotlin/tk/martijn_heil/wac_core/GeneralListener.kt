@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 
 
 class GeneralListener() : Listener {
@@ -46,7 +47,7 @@ class GeneralListener() : Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerLogin(e: PlayerJoinEvent) {
         WacCore.logger.fine("Ensuring that " + e.player.name + " is present in database..")
         ensurePresenceInDatabase(e.player)
@@ -61,7 +62,7 @@ class GeneralListener() : Listener {
 
     @EventHandler(ignoreCancelled = true)
     fun onEnderPearl(e: PlayerInteractEvent) {
-        if(e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK
+        if((e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
                 && e.player.inventory.itemInMainHand.type == Material.ENDER_PEARL) {
             e.isCancelled = true
             e.player.sendMessage(ChatColor.RED.toString() + "Ender pearls zijn uitgeschakeld!")
@@ -73,6 +74,13 @@ class GeneralListener() : Listener {
         if(e.newGameMode == GameMode.SPECTATOR && !e.player.hasPermission("wac-core.gamemode.spectator")) {
             e.isCancelled = true
             e.player.sendMessage(ChatColor.RED.toString() + "Jij mag niet in spectator mode!")
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerChorusFruitTeleport(e: PlayerTeleportEvent) {
+        if(e.cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT) {
+            e.isCancelled = true
         }
     }
 }
