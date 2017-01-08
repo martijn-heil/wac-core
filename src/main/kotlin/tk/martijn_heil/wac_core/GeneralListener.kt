@@ -19,14 +19,17 @@
 package tk.martijn_heil.wac_core
 
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
+import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 
@@ -62,6 +65,14 @@ class GeneralListener() : Listener {
                 && e.player.inventory.itemInMainHand.type == Material.ENDER_PEARL) {
             e.isCancelled = true
             e.player.sendMessage(ChatColor.RED.toString() + "Ender pearls zijn uitgeschakeld!")
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    fun onPlayerGameModeChange(e: PlayerGameModeChangeEvent) {
+        if(e.newGameMode == GameMode.SPECTATOR && !e.player.hasPermission("wac-core.gamemode.spectator")) {
+            e.isCancelled = true
+            e.player.sendMessage(ChatColor.RED.toString() + "Jij mag niet in spectator mode!")
         }
     }
 }

@@ -3,3 +3,14 @@ version: @version@
 author: Ninjoh
 main: tk.martijn_heil.wac_core.WacCore
 depend: [Factions]
+
+permissions:
+  wac-core.*:
+    default: op
+    description: Gives access to all wac-core permissions.
+    children:
+      wac-core.gamemode.spectator: true
+
+  wac-core.gamemode.spectator:
+    description: Allows you to enter spectator mode.
+    default: op
