@@ -26,13 +26,12 @@ import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerGameModeChangeEvent
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.inventory.ItemStack
 
 
 class GeneralListener() : Listener {
@@ -61,11 +60,11 @@ class GeneralListener() : Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    fun onEnderPearl(e: PlayerInteractEvent) {
-        if((e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK)
-                && e.player.inventory.itemInMainHand.type == Material.ENDER_PEARL) {
+    fun onEnderPearl(e: PlayerTeleportEvent) {
+        if(e.cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             e.isCancelled = true
             e.player.sendMessage(ChatColor.RED.toString() + "Ender pearls zijn uitgeschakeld!")
+            e.player.inventory.addItem(ItemStack(Material.ENDER_PEARL, 1))
         }
     }
 
