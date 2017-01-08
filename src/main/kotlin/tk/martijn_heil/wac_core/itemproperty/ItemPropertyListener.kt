@@ -59,20 +59,20 @@ class ItemPropertyListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST) // If player tries to put a soulbound item in another inventory..
     fun onInventoryClick(e: InventoryClickEvent) {
-        if(e.whoClicked !is Player) return;
+        if(e.whoClicked !is Player) return
 
         if (e.currentItem != null && e.action == InventoryAction.MOVE_TO_OTHER_INVENTORY &&
                 isSoulBound(e.currentItem) &&
                 e.inventory.type != InventoryType.PLAYER &&
                 e.inventory.type != InventoryType.CRAFTING &&
                 e.inventory.type != InventoryType.CREATIVE) {
-            e.isCancelled = true;
+            e.isCancelled = true
             e.whoClicked.sendMessage(ChatColor.RED.toString() + WacCore.messages.getString("error.event.cancelled.inventory.putItemIn"));
         }
 
 
         // Click the item, and then click it into the slot in the chest
-        val clicked = e.clickedInventory
+        val clicked = e.inventory
         if (clicked == null || clicked.type != InventoryType.PLAYER &&
                 clicked.type != InventoryType.CREATIVE &&
                 clicked.type != InventoryType.CRAFTING) {
@@ -99,8 +99,8 @@ class ItemPropertyListener : Listener {
             var cancel = false
             for (i in e.inventory.contents) {
                 if (i != null && isSoulBound(i)) {
-                    cancel = true;
-                    break;
+                    cancel = true
+                    break
                 }
             }
 
@@ -201,8 +201,8 @@ class ItemPropertyListener : Listener {
 
         if (holder is Player) {
             if (!e.destination.equals(holder.inventory)) {
-                e.isCancelled = true;
-                holder.updateInventory();
+                e.isCancelled = true
+                holder.updateInventory()
                 holder.sendMessage(WacCore.messages.getString("error.event.cancelled.inventory.putItemIn"));
             }
         }

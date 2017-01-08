@@ -18,9 +18,12 @@
 
 package tk.martijn_heil.wac_core
 
+import com.massivecraft.factions.Rel
 import com.massivecraft.factions.entity.Faction
 import com.massivecraft.factions.entity.FactionColl
+import com.massivecraft.factions.entity.MPlayer
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import java.util.*
 
 
@@ -50,8 +53,13 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
             return members
         }
 
-    val leader: WacPlayer
+    val home: Location = faction.home.asBukkitLocation()
+
+    var leader: WacPlayer
         get() = WacPlayer(faction.leader.player)
+        set(value) {
+            MPlayer.get(value.offlinePlayer.uniqueId).role = Rel.LEADER
+        }
 
     companion object {
         fun fromFaction(f: Faction): Kingdom? {

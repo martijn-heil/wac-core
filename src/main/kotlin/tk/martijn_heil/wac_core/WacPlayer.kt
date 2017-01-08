@@ -33,10 +33,4 @@ open class WacPlayer(val offlinePlayer: OfflinePlayer) : Serializable {
         }
 
         get() = Kingdom.fromFaction(MPlayer.get(offlinePlayer.uniqueId).faction)
-
-    fun moveToKingdomHome() {
-        if(kingdom != null && (kingdom as Kingdom).faction.hasHome()) {
-            offlinePlayer.player?.teleport((kingdom as Kingdom).faction.home.asBukkitLocation())
-        }
-    }
 }

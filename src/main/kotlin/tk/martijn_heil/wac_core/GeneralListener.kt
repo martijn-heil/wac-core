@@ -19,8 +19,10 @@
 package tk.martijn_heil.wac_core
 
 import org.bukkit.entity.Player
+import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerJoinEvent
 
@@ -41,5 +43,12 @@ class GeneralListener() : Listener {
     fun onPlayerLogin(e: PlayerJoinEvent) {
         WacCore.logger.fine("Ensuring that " + e.player.name + " is present in database..")
         ensurePresenceInDatabase(e.player)
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onCreateSpawn(e: CreatureSpawnEvent) {
+        if(e.spawnReason == CreatureSpawnEvent.SpawnReason.LIGHTNING && e.entity is SkeletonHorse) {
+            e.isCancelled = true
+        }
     }
 }
