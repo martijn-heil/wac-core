@@ -30,7 +30,10 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.PlayerGameModeChangeEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 
 
@@ -93,17 +96,5 @@ class GeneralListener() : Listener {
                 it.playSound(it.location, Sound.ENTITY_WITCH_AMBIENT, 10.0f, 1.0f)
             }
         }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
-        if(WacPlayer.valueOf(e.player).isLongTermSneaking) {
-            e.isCancelled = true
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    fun onPlayerJoin(e: PlayerJoinEvent) {
-        if(WacPlayer.valueOf(e.player).isLongTermSneaking) e.player.isSneaking = true
     }
 }

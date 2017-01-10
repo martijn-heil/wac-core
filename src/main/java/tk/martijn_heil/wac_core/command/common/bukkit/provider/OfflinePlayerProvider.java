@@ -26,6 +26,9 @@ import com.sk89q.intake.parametric.Provider;
 import com.sk89q.intake.parametric.ProvisionException;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permissible;
+import tk.martijn_heil.wac_core.WacCore;
 import tk.martijn_heil.wac_core.command.common.Target;
 
 import javax.annotation.Nullable;
@@ -57,10 +60,15 @@ public class OfflinePlayerProvider implements Provider<OfflinePlayer>
     @SuppressWarnings("deprecation")
     public OfflinePlayer get(CommandArgs commandArgs, List<? extends Annotation> modifiers) throws ArgumentException, ProvisionException
     {
+        CommandSender sender = (CommandSender) commandArgs.getNamespace().get("sender");
+        Target targetAnnotation = null;
+
         boolean isTarget = false;
         for(Annotation annotation : modifiers) {
            if(annotation instanceof Target) {
+               WacCore.logger.fine("Target annotation found!");
                isTarget = true;
+               targetAnnotation = (Target) annotation;
                break;
            }
         }
@@ -80,9 +88,9 @@ public class OfflinePlayerProvider implements Provider<OfflinePlayer>
                 p = server.getOfflinePlayer(arg);
             }
         }
-        else if (isTarget && commandArgs.getNamespace().get("sender") instanceof OfflinePlayer)
+        else if (isTarget && sender instanceof OfflinePlayer)
         {
-            p = (OfflinePlayer) commandArgs.getNamespace().get("sender");
+            p = (OfflinePlayer) sender;
         }
         else
         {
@@ -92,6 +100,11 @@ public class OfflinePlayerProvider implements Provider<OfflinePlayer>
 
         if(p == null) {
             throw new ArgumentParseException("Player not found");
+        }
+
+        if(isTarget && !p.equals(sender) && !commandArgs.getNamespace().get(Permissible.class).hasPermission(targetAnnotation.value()))
+        {
+            throw new ArgumentParseException("You need " + targetAnnotation.value());
         }
 
         return p;

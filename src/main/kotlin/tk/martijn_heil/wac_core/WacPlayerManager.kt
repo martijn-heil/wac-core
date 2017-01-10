@@ -26,8 +26,15 @@ class WacPlayerManager {
     private val players = HashMap<UUID, WacPlayer>()
 
     fun getWacPlayer(uuid: UUID): WacPlayer {
-        return players.getOrPut(uuid, {
-            return WacPlayer(Bukkit.getOfflinePlayer(uuid))
-        })
+        if (players.containsKey(uuid)) {
+            WacCore.logger.fine("Found WacPlayer with UUID $uuid")
+            return players.get(uuid)!!
+        } else {
+            WacCore.logger.fine("Could not find WacPlayer instance of UUID $uuid in cache")
+            WacCore.logger.fine("Creating new WacPlayer instance for player with UUID $uuid")
+            val p = WacPlayer(Bukkit.getOfflinePlayer(uuid))
+            players.put(uuid, p)
+            return p
+        }
     }
 }

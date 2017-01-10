@@ -23,7 +23,6 @@ import com.sk89q.intake.parametric.AbstractModule;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import tk.martijn_heil.wac_core.command.common.Target;
 
 public class BukkitModule extends AbstractModule
 {
@@ -39,9 +38,7 @@ public class BukkitModule extends AbstractModule
     protected void configure()
     {
         bind(Server.class).toInstance(server);
-        bind(Player.class).toProvider(new PlayerProvider(server, false));
+        bind(Player.class).toProvider(new PlayerProvider(server, new OfflinePlayerProvider(server)));
         bind(OfflinePlayer.class).toProvider(new OfflinePlayerProvider(server));
-
-        bind(Player.class).annotatedWith(Target.class).toProvider(new PlayerProvider(server, true));
     }
 }
