@@ -20,6 +20,7 @@ package tk.martijn_heil.wac_core.command.common.bukkit.provider.sender;
 
 
 import com.sk89q.intake.parametric.AbstractModule;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -36,5 +37,6 @@ public class BukkitSenderModule extends AbstractModule
         bind(ConsoleCommandSender.class).annotatedWith(Sender.class).toProvider(new BukkitSenderProvider<>());
         bind(BlockCommandSender.class).annotatedWith(Sender.class).toProvider(new BukkitSenderProvider<>());
         bind(Player.class).annotatedWith(Sender.class).toProvider(new BukkitSenderProvider<>());
+        bind(OfflinePlayer.class).annotatedWith(Sender.class).toProvider(new BukkitSenderProvider<>());
     }
 }
