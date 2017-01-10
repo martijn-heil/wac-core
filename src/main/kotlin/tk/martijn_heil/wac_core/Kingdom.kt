@@ -46,7 +46,7 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
         get() {
             val members = ArrayList<WacPlayer>()
             for (offlinePlayer in Bukkit.getServer().offlinePlayers) {
-                val pl = WacPlayer(offlinePlayer)
+                val pl = WacPlayer.valueOf(offlinePlayer)
                 if (pl.kingdom == this) members.add(pl)
             }
 
@@ -56,7 +56,7 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
     val home: Location = faction.home.asBukkitLocation()
 
     var leader: WacPlayer
-        get() = WacPlayer(faction.leader.player)
+        get() = WacPlayer.valueOf(faction.leader.player)
         set(value) {
             MPlayer.get(value.offlinePlayer.uniqueId).role = Rel.LEADER
         }

@@ -30,10 +30,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.player.PlayerGameModeChangeEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 
 
@@ -44,7 +41,7 @@ class GeneralListener() : Listener {
      */
     @EventHandler(ignoreCancelled = true)
     fun onEntityTarget(e: EntityTargetEvent) {
-        if (e.target is Player && WacPlayer(e.target as Player).kingdom == Kingdom.UNDEAD ) {
+        if (e.target is Player && WacPlayer.valueOf(e.target as Player).kingdom == Kingdom.UNDEAD ) {
             e.isCancelled = true
         }
     }
@@ -88,7 +85,7 @@ class GeneralListener() : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onUndeadUseSoundWand(e: PlayerInteractEvent) {
-        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && WacPlayer(e.player).kingdom == Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
+        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && WacPlayer.valueOf(e.player).kingdom == Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
                 e.player.inventory.itemInMainHand.hasItemMeta() && e.player.inventory.itemInMainHand.itemMeta.hasDisplayName() &&
         e.player.inventory.itemInMainHand.itemMeta.displayName == ChatColor.GOLD.toString() + "SoundWand") {
 
@@ -96,5 +93,17 @@ class GeneralListener() : Listener {
                 it.playSound(it.location, Sound.ENTITY_WITCH_AMBIENT, 10.0f, 1.0f)
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
+        if(WacPlayer.valueOf(e.player).isLongTermSneaking) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    fun onPlayerJoin(e: PlayerJoinEvent) {
+        if(WacPlayer.valueOf(e.player).isLongTermSneaking) e.player.isSneaking = true
     }
 }

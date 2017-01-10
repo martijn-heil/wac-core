@@ -20,7 +20,9 @@ package tk.martijn_heil.wac_core
 
 import com.massivecraft.factions.entity.MPlayer
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import java.io.Serializable
+import java.util.*
 
 
 open class WacPlayer(val offlinePlayer: OfflinePlayer) : Serializable {
@@ -33,4 +35,19 @@ open class WacPlayer(val offlinePlayer: OfflinePlayer) : Serializable {
         }
 
         get() = Kingdom.fromFaction(MPlayer.get(offlinePlayer.uniqueId).faction)
+
+    var isLongTermSneaking: Boolean = false
+        set(value) {
+            if(offlinePlayer.isOnline) {
+                offlinePlayer.player.isSneaking = value
+            }
+
+            field = value
+        }
+
+    companion object {
+        fun valueOf(uuid: UUID): WacPlayer = WacCore.playerManager.getWacPlayer(uuid)
+        fun valueOf(player: Player): WacPlayer = WacCore.playerManager.getWacPlayer(player.uniqueId)
+        fun valueOf(player: OfflinePlayer): WacPlayer = WacCore.playerManager.getWacPlayer(player.uniqueId)
+    }
 }

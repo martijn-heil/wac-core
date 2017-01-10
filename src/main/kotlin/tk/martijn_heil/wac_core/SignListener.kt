@@ -56,7 +56,7 @@ class SignListener : Listener {
         if(e.hasBlock() && e.clickedBlock.state is Sign &&
                 (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {
 
-            val p = WacPlayer(e.player)
+            val p = WacPlayer.valueOf((e.player))
 
             if(p.kingdom != null) {
                 e.player.sendMessage(ChatColor.RED.toString() + "Je zit al in een kingdom! " +

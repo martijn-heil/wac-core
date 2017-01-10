@@ -37,7 +37,7 @@ public class BukkitSenderProvider<T> implements Provider<T>
     @Override
     public boolean isProvided()
     {
-        return false;
+        return true;
     }
 
 
@@ -66,7 +66,7 @@ public class BukkitSenderProvider<T> implements Provider<T>
         }
         catch(ClassCastException ex)
         {
-            throw new ProvisionException("Only " + senderClass.getSimpleName() + "'s can execute this tk.martijn_heil.wac_core.command");
+            throw new ProvisionException("Only " + senderClass.getSimpleName() + "'s can execute this command");
         }
 
 

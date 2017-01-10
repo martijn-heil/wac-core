@@ -41,9 +41,9 @@ public class EPlayerProvider //implements Provider<EPlayer>
 //
 //    @Nullable
 //    @Override
-//    public EPlayer get(CommandArgs commandArgs, List<? extends Annotation> list) throws ArgumentException, ProvisionException
+//    public EPlayer valueOf(CommandArgs commandArgs, List<? extends Annotation> list) throws ArgumentException, ProvisionException
 //    {
-//        Player player = playerProvider.get(commandArgs, list);
+//        Player player = playerProvider.valueOf(commandArgs, list);
 //        EPlayer ep = ElytraOptions.getEPlayer(player);
 //        if(ep == null) throw new ArgumentParseException("Player not found.");
 //        return ep;

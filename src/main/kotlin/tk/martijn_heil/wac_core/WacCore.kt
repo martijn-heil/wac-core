@@ -18,10 +18,21 @@
 
 package tk.martijn_heil.wac_core
 
+import com.sk89q.intake.Intake
+import com.sk89q.intake.fluent.CommandGraph
+import com.sk89q.intake.parametric.ParametricBuilder
+import com.sk89q.intake.parametric.provider.PrimitivesModule
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import tk.martijn_heil.wac_core.command.WacCoreCommands
+import tk.martijn_heil.wac_core.command.WacCoreModule
+import tk.martijn_heil.wac_core.command.common.bukkit.BukkitAuthorizer
+import tk.martijn_heil.wac_core.command.common.bukkit.BukkitUtils
+import tk.martijn_heil.wac_core.command.common.bukkit.provider.BukkitModule
+import tk.martijn_heil.wac_core.command.common.bukkit.provider.sender.BukkitSenderModule
 import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener
 import java.sql.Connection
 import java.util.*
@@ -31,6 +42,7 @@ import java.util.logging.Logger
 class WacCore : JavaPlugin() {
 
     override fun onEnable() {
+        Companion.plugin = this
         Companion.logger = logger
         logger.fine("Saving default config..")
         saveDefaultConfig()
@@ -64,6 +76,31 @@ class WacCore : JavaPlugin() {
             ensurePresenceInDatabase(player)
         }
 
+        playerManager = WacPlayerManager()
+
+        val injector = Intake.createInjector()
+        injector.install(PrimitivesModule())
+        injector.install(BukkitModule(Bukkit.getServer()))
+        injector.install(BukkitSenderModule())
+        injector.install(WacCoreModule())
+
+        val builder = ParametricBuilder(injector)
+        builder.authorizer = BukkitAuthorizer()
+
+
+        val dispatcher = CommandGraph()
+                .builder(builder)
+                .commands()
+                .group("wac-core", "wac", "lg", "luchtgames")
+                .registerMethods(WacCoreCommands())
+                .parent()
+                .graph()
+                .dispatcher
+
+
+
+        BukkitUtils.registerDispatcher(dispatcher, this)
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
             val loc = Kingdom.UNDEAD.home
             val radius = 120
@@ -83,6 +120,8 @@ class WacCore : JavaPlugin() {
         lateinit var dbconn: Connection
         lateinit var messages: ResourceBundle
         lateinit var logger: Logger
+        lateinit var plugin: Plugin
+        lateinit var playerManager: WacPlayerManager
     }
 
     enum class Permission(val str: String) {
