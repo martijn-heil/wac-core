@@ -14,3 +14,11 @@ permissions:
   wac-core.gamemode.spectator:
     description: Allows you to enter spectator mode.
     default: op
+
+  wac-core.command.sneak:
+    description: Gives access to the /wac sneak command
+    default: op
+
+  wac-core.command.sneak.others:
+    description: Allows you to edit other player's sneak status.
+    default: op
