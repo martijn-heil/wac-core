@@ -10,6 +10,8 @@ permissions:
     description: Gives access to all wac-core permissions.
     children:
       wac-core.gamemode.spectator: true
+      wac-core.command.sneak: true
+      wac-core.command.sneak.others: true
 
   wac-core.gamemode.spectator:
     description: Allows you to enter spectator mode.
