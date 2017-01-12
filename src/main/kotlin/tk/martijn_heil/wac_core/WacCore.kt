@@ -35,6 +35,8 @@ import tk.martijn_heil.wac_core.command.common.bukkit.provider.BukkitModule
 import tk.martijn_heil.wac_core.command.common.bukkit.provider.sender.BukkitSenderModule
 import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener
 import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 import java.util.*
 import java.util.logging.Logger
 
@@ -48,9 +50,9 @@ class WacCore : JavaPlugin() {
         saveDefaultConfig()
 
         logger.info("Migrating database if needed..")
-        val dbUrl = config.getString("db.url")
-        val dbUsername = config.getString("db.username")
-        val dbPassword = config.getString("db.password")
+        dbUrl = config.getString("db.url")
+        dbUsername = config.getString("db.username")
+        dbPassword = config.getString("db.password")
         // Storing the password in a char array doesn't improve much..
         // it's stored in plaintext in the "config" object anyway.. :/
 
@@ -61,6 +63,15 @@ class WacCore : JavaPlugin() {
         val hackyLoader = HackyClassLoader(this.classLoader)
         val cls = hackyLoader.loadClass("tk.martijn_heil.wac_core.HackyClass")
         cls!!.getMethod("doStuff", String::class.java, String::class.java, String::class.java, ClassLoader::class.java).invoke(null, dbUrl, dbUsername, dbPassword, this.classLoader)
+
+
+        try {
+            WacCore.dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
+        } catch (ex: SQLException) {
+            WacCore.logger.severe(ex.message)
+            WacCore.logger.severe("Disabling plugin due to database error..")
+            this.isEnabled = false
+        }
 
 
         messages = ResourceBundle.getBundle("messages.messages")
@@ -118,7 +129,18 @@ class WacCore : JavaPlugin() {
     }
 
     companion object {
-        lateinit var dbconn: Connection
+
+        private lateinit var dbUrl: String
+        private lateinit var dbUsername: String
+        private lateinit var dbPassword: String
+
+        var dbconn: Connection? = null
+            get() {
+                if(dbconn!!.isClosed) field = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
+
+                return field
+            }
+
         lateinit var messages: ResourceBundle
         lateinit var logger: Logger
         lateinit var plugin: Plugin

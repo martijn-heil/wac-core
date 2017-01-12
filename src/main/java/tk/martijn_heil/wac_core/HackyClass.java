@@ -24,9 +24,6 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationVersion;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 public class HackyClass
 {
     public static boolean doStuff(String dbUrl, String dbUsername, String dbPassword, ClassLoader pluginLoader) {
@@ -50,13 +47,6 @@ public class HackyClass
                 WacCore.logger.severe("Continuing to disable plugin..");
             }
             return false;
-        }
-
-        try {
-            WacCore.dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-        } catch (SQLException ex) {
-            WacCore.logger.severe(ex.getMessage());
-            return true;
         }
 
         return true;
