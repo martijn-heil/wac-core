@@ -34,6 +34,7 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
     HUMAN_3("Volcair"),
     DWARVES("Dhar' Guldaruhm", "DharGuldaruhm"),
     ORCS("Zorgirhgoth"),
+    GOBLINS("Krulk"),
     OGRES("Vrewikur");
 
     val faction: Faction
