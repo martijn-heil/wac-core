@@ -31,12 +31,7 @@ class WacCoreCommands {
     @Command(aliases = arrayOf("sneak"), desc = "Toggle sneak")
     @Require("wac-core.command.sneak")
     fun sneak(@Sender sender: CommandSender, @Target("wac-core.command.sneak.others") target: WacPlayer) {
-        if(target.isLongTermSneaking) {
-            target.isLongTermSneaking = false
-            sender.sendMessage(target.offlinePlayer.name + " is no longer sneaking.")
-        } else {
-            target.isLongTermSneaking = true
-            sender.sendMessage(target.offlinePlayer.name + " is now sneaking.")
-        }
+        target.isLongTermSneaking = !target.isLongTermSneaking
+        sender.sendMessage(target.offlinePlayer.name + if(target.isLongTermSneaking) " is now sneaking." else " is no longer sneaking.")
     }
 }

@@ -27,7 +27,7 @@ class WacPlayerManager {
 
     fun getWacPlayer(uuid: UUID): WacPlayer {
         if (players.containsKey(uuid)) {
-            return players.get(uuid)!!
+            return players[uuid]!!
         } else {
             val p = WacPlayer(Bukkit.getOfflinePlayer(uuid))
             players.put(uuid, p)

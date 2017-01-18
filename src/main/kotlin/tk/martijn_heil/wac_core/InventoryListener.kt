@@ -105,6 +105,9 @@ class InventoryListener : Listener {
     }
 
 
+    /**
+     * @returns A pair, True if the player can receive the item stack, and possibly a reason.
+     */
     fun canPlayerReceiveItemStack(p: Player, itemStack: ItemStack): Pair<Boolean, String?> {
         return Pair(true, null)
         // TODO implement some actual rules.

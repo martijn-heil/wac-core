@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 class LongTermSneakListener : Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
-        if(WacPlayer.valueOf(e.player).isLongTermSneaking) {
+        if(WacPlayer.valueOf(e.player).isLongTermSneaking && e.player.isSneaking) {
             e.isCancelled = true
         }
     }
@@ -45,7 +45,7 @@ class LongTermSneakListener : Listener {
         if(WacPlayer.valueOf(e.player).isLongTermSneaking) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
                 e.player.isSneaking = true
-            }, 20)
+            }, 30L)
         }
     }
 }

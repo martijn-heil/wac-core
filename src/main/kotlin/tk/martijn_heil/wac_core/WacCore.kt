@@ -136,7 +136,7 @@ class WacCore : JavaPlugin() {
 
         var dbconn: Connection? = null
             get() {
-                if(dbconn!!.isClosed) field = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
+                if(field!!.isClosed) field = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
 
                 return field
             }

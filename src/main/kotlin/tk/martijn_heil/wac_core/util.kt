@@ -40,14 +40,17 @@ fun getDefaultWorld(): World = Bukkit.getServer().worlds[0]
 
 fun ensurePresenceInDatabase(offlinePlayer: OfflinePlayer) {
     // Check if player is registered in the database yet.
-    val stmnt = WacCore.dbconn!!.prepareStatement("SELECT 1 FROM wac_core_players WHERE uuid=?")
+    var stmnt = WacCore.dbconn!!.prepareStatement("SELECT 1 FROM wac_core_players WHERE uuid=?")
     stmnt.setString(1, offlinePlayer.uniqueId.toString())
     val result = stmnt.executeQuery()
     if(!result.next()) { // player isn't yet present in the database.
         val stmnt2 = WacCore.dbconn!!.prepareStatement("INSERT INTO wac_core_players (uuid) VALUES(?)")
         stmnt2.setString(1, offlinePlayer.uniqueId.toString())
         stmnt2.executeUpdate()
+        stmnt2.close()
     }
+
+    stmnt.close()
 }
 
 fun getPlayersInRadius(loc: Location, radius: Int): List<Player> {

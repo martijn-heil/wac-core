@@ -38,9 +38,8 @@ open class WacPlayer(val offlinePlayer: OfflinePlayer) : Serializable {
 
     var isLongTermSneaking: Boolean = false
         set(value) {
-            if(offlinePlayer.isOnline) {
-                offlinePlayer.player.isSneaking = value
-            }
+            offlinePlayer.player?.isSneaking = value
+            offlinePlayer.player?.isSneaking = value
 
             field = value
         }

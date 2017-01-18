@@ -54,7 +54,8 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
             return members
         }
 
-    val home: Location = faction.home.asBukkitLocation()
+    val home: Location
+        get() = faction.home.asBukkitLocation()
 
     var leader: WacPlayer
         get() = WacPlayer.valueOf(faction.leader.player)

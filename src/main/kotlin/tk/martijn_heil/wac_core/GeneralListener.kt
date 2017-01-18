@@ -22,8 +22,8 @@ import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
-import org.bukkit.entity.SkeletonHorse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -56,8 +56,8 @@ class GeneralListener() : Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    fun onCreateSpawn(e: CreatureSpawnEvent) {
-        if(e.spawnReason == CreatureSpawnEvent.SpawnReason.LIGHTNING && e.entity is SkeletonHorse) {
+    fun onCreatureSpawn(e: CreatureSpawnEvent) {
+        if(e.spawnReason == CreatureSpawnEvent.SpawnReason.LIGHTNING && e.entity.type == EntityType.SKELETON_HORSE) {
             e.isCancelled = true
         }
     }
@@ -93,7 +93,7 @@ class GeneralListener() : Listener {
         e.player.inventory.itemInMainHand.itemMeta.displayName == ChatColor.GOLD.toString() + "SoundWand") {
 
             getPlayersInRadius(e.player.location, 200).forEach {
-                it.playSound(it.location, Sound.ENTITY_WITCH_AMBIENT, 10.0f, 1.0f)
+                it.playSound(it.location, Sound.ENTITY_ENDERDRAGON_DEATH, 10.0f, 1.0f)
             }
         }
     }
