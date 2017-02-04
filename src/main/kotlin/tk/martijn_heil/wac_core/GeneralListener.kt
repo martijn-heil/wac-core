@@ -18,12 +18,8 @@
 
 package tk.martijn_heil.wac_core
 
-import org.bukkit.ChatColor
-import org.bukkit.GameMode
-import org.bukkit.Material
-import org.bukkit.Sound
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
+import org.bukkit.*
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -73,9 +69,34 @@ class GeneralListener() : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onPlayerGameModeChange(e: PlayerGameModeChangeEvent) {
-        if(e.newGameMode == GameMode.SPECTATOR && !e.player.hasPermission("wac-core.gamemode.spectator")) {
+        if(e.newGameMode == GameMode.SPECTATOR && !e.player.hasPermission(WacCore.Permission.GAMEMODE__SPECTATOR.toString())) {
             e.isCancelled = true
             e.player.sendMessage(ChatColor.RED.toString() + "Jij mag niet in spectator mode!")
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    fun onPlayerGameModeChange2(e: PlayerGameModeChangeEvent) {
+        val p = WacPlayer.valueOf(e.player)
+        if(!e.player.hasPermission(WacCore.Permission.BYPASS__GAMEMODE_SWITCH_PENALTY.toString()) && !p.isGameModeSwitching) {
+            p.isGameModeSwitching = true
+
+            when {
+                (e.newGameMode == GameMode.SURVIVAL || e.newGameMode == GameMode.ADVENTURE) -> {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
+                        p.isGameModeSwitching = false
+                    }, 600)
+                }
+
+                (e.newGameMode == GameMode.CREATIVE || e.newGameMode == GameMode.SPECTATOR) -> {
+                    e.isCancelled = true
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
+                        // Note: the order here is important! First set the player's gamemode, then set the switching state to false.
+                        e.player.gameMode = e.newGameMode
+                        p.isGameModeSwitching = false
+                    }, 600)
+                }
+            }
         }
     }
 
@@ -94,6 +115,15 @@ class GeneralListener() : Listener {
 
             getPlayersInRadius(e.player.location, 200).forEach {
                 it.playSound(it.location, Sound.ENTITY_ENDERDRAGON_DEATH, 10.0f, 1.0f)
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    fun onPlayerTeleport(e: PlayerTeleportEvent) {
+        e.player.location.world.getEntitiesByClasses(Ocelot::class.java, Wolf::class.java).forEach {
+            if (it is Tameable && it.owner == e.player && !((it is Ocelot && it.isSitting) || (it is Wolf && it.isSitting))) {
+                it.teleport(e.to)
             }
         }
     }

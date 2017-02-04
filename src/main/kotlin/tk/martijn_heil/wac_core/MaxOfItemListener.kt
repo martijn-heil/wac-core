@@ -44,7 +44,7 @@ class MaxOfItemListener() : Listener {
 
         // If the player tries to drag and drop a single item into their inventory, or if they drag and drop an entire stack into their inventory.
         // So, if the player has no TNT in his inventory yet, but tries to put an entire stack in at once, that is also prevented.
-        if(e.inventory == e.whoClicked.inventory && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str)) {
+        if(e.inventory == e.whoClicked.inventory && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS__ITEM_LIMIT.str)) {
             maxPerPlayerInventory.forEach {
                 val m = it.key
                 val maxAmount = it.value
@@ -91,7 +91,7 @@ class MaxOfItemListener() : Listener {
             // If the player is trying to shift click TNT into their inventory.
             if(e.inventory != e.whoClicked.inventory && (e.click == ClickType.SHIFT_LEFT || e.click == ClickType.SHIFT_RIGHT)
                     && e.currentItem.type == m && (e.whoClicked.inventory.contains(m, maxAmount) || (e.currentItem.amount + e.currentItem.amount) > maxAmount)
-                    && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str)) {
+                    && !e.whoClicked.hasPermission(WacCore.Permission.BYPASS__ITEM_LIMIT.str)) {
                 e.isCancelled = true
                 e.whoClicked.sendMessage(ChatColor.RED.toString() + getStringWithArgs(WacCore.messages,
                         arrayOf(maxAmount.toString(), m.toString()), "error.event.cancelled.inventory.moreOfItemThanAllowed"))
@@ -109,7 +109,7 @@ class MaxOfItemListener() : Listener {
             val maxAmount = it.value
 
             // If the player tries to pick up this item type from the ground.
-            if(!e.player.hasPermission(WacCore.Permission.BYPASS_ITEMLIMIT.str) && e.item.itemStack.type == m) {
+            if(!e.player.hasPermission(WacCore.Permission.BYPASS__ITEM_LIMIT.str) && e.item.itemStack.type == m) {
 
                 // If the player already has the max amount of this item type in his inventory, cancel the event.
                 if(e.player.inventory.contains(m, maxAmount)) {

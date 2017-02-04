@@ -38,11 +38,16 @@ open class WacPlayer(val offlinePlayer: OfflinePlayer) : Serializable {
 
     var isLongTermSneaking: Boolean = false
         set(value) {
-            offlinePlayer.player?.isSneaking = value
-            offlinePlayer.player?.isSneaking = value
-
-            field = value
+            if(value) {
+                offlinePlayer.player?.isSneaking = value
+                field = value
+            } else {
+                field = value
+                offlinePlayer.player?.isSneaking = value
+            }
         }
+
+    var isGameModeSwitching: Boolean = false
 
     companion object {
         fun valueOf(uuid: UUID): WacPlayer = WacCore.playerManager.getWacPlayer(uuid)

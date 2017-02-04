@@ -22,6 +22,7 @@ import com.massivecraft.factions.Rel
 import com.massivecraft.factions.entity.Faction
 import com.massivecraft.factions.entity.FactionColl
 import com.massivecraft.factions.entity.MPlayer
+import com.massivecraft.massivecore.ps.PS
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import java.util.*
@@ -39,7 +40,7 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
 
     val faction: Faction
         get() {
-            return FactionColl.get().getByName(factionName)
+            return FactionColl.get().getByName(factionName) ?: throw RuntimeException("Faction " + this.factionName + " could not be found for kingdom " + this.name + ".")
         }
 
 
@@ -54,8 +55,11 @@ enum class Kingdom(val kingdomName: String, val factionName: String = kingdomNam
             return members
         }
 
-    val home: Location
+    var home: Location
         get() = faction.home.asBukkitLocation()
+        set(value) {
+            faction.home = PS.valueOf(value)
+        }
 
     var leader: WacPlayer
         get() = WacPlayer.valueOf(faction.leader.player)

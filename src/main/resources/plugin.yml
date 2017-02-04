@@ -2,7 +2,7 @@ name: wac-core
 version: @version@
 author: Ninjoh
 main: tk.martijn_heil.wac_core.WacCore
-depend: [Factions]
+depend: [Factions,ProtocolLib]
 
 permissions:
   wac-core.*:
@@ -10,8 +10,30 @@ permissions:
     description: Gives access to all wac-core permissions.
     children:
       wac-core.gamemode.spectator: true
+      wac-core.command.*: true
+      wac-core.bypass.*: true
+
+  wac-core.command.*:
+    default: op
+    description: Gives access to all wac-core commands.
+    children:
       wac-core.command.sneak: true
       wac-core.command.sneak.others: true
+
+  wac-core.bypass.*:
+    default: op
+    description: Gives access to all bypasses.
+    children:
+      wac-core.bypass.gamemode-switch-penalty: true
+      wac-core.bypass.item-limit: true
+
+  wac-core.bypass.gamemode-switch-penalty:
+    description: Makes you bypass the gamemode switch penalty.
+    default: op
+
+  wac-core.bypass.item-limit:
+    description: Makes you bypass the item limit for some items.
+    default: op
 
   wac-core.gamemode.spectator:
     description: Allows you to enter spectator mode.

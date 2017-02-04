@@ -18,6 +18,8 @@
 
 package tk.martijn_heil.wac_core
 
+import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.ProtocolManager
 import com.sk89q.intake.Intake
 import com.sk89q.intake.fluent.CommandGraph
 import com.sk89q.intake.parametric.ParametricBuilder
@@ -42,6 +44,8 @@ import java.util.logging.Logger
 
 
 class WacCore : JavaPlugin() {
+
+    lateinit private var protocolManager: ProtocolManager
 
     override fun onEnable() {
         Companion.plugin = this
@@ -90,6 +94,7 @@ class WacCore : JavaPlugin() {
 
         playerManager = WacPlayerManager()
 
+        logger.info("Building and registering commands..")
         val injector = Intake.createInjector()
         injector.install(PrimitivesModule())
         injector.install(BukkitModule(Bukkit.getServer()))
@@ -110,9 +115,9 @@ class WacCore : JavaPlugin() {
                 .dispatcher
 
 
-
         BukkitUtils.registerDispatcher(dispatcher, this)
 
+        logger.info("Scheduling tasks..")
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
             val loc = Kingdom.UNDEAD.home
             val radius = 120
@@ -126,6 +131,35 @@ class WacCore : JavaPlugin() {
                 }
             }
         }, 0L, 600L)
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
+            Bukkit.getOnlinePlayers().forEach {
+                val p = WacPlayer.valueOf(it)
+                if(p.isGameModeSwitching) {
+                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false), true)
+                }
+            }
+        }, 0, 20)
+
+        logger.info("Setting up ProtocolLib things..")
+        protocolManager = ProtocolLibrary.getProtocolManager()
+
+//        protocolManager.addPacketListener(object : PacketAdapter(this, ListenerPriority.NORMAL, PacketType.fromLegacy(0x20, PacketType.Sender.SERVER)) {
+//            fun isElvenCityChunk(): Boolean {
+//                return false
+//            }
+//
+//            fun getFakeChunk(x: Int, y: Int) {
+//
+//            }
+//
+//            override fun onPacketSending(e: PacketEvent?) {
+//                if(e == null) return
+//                val packet = e.packet
+//
+//                packet.
+//            }
+//        })
     }
 
     companion object {
@@ -148,7 +182,9 @@ class WacCore : JavaPlugin() {
     }
 
     enum class Permission(val str: String) {
-        BYPASS_ITEMLIMIT("wac-core.bypass.itemlimit");
+        BYPASS__ITEM_LIMIT("wac-core.bypass.item-limit"),
+        BYPASS__GAMEMODE_SWITCH_PENALTY("wac-core.bypass.gamemode-switch-penalty"),
+        GAMEMODE__SPECTATOR("wac-core.gamemode.spectator");
 
         override fun toString() = str
     }

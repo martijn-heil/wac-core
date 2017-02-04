@@ -49,6 +49,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url "http://maven.sk89q.com/repo/" }
     maven { url "http://nexus.hc.to/content/repositories/pub_releases" }
+    maven { url "http://repo.dmulloy2.net/content/groups/public/" }
 
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -70,11 +71,10 @@ dependencies {
     compile 'com.sk89q.intake:intake:4.0-SNAPSHOT'
     compile 'org.flywaydb:flyway-core:4.0.3'
 
-    //compile files('lib/Factions.jar')
-    //compile files('lib/MassiveCore')
     compileOnly fileTree(dir: 'lib', include: '*.jar')
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:3.6.5'
 
     compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.11.2-R0.1-SNAPSHOT') { changing = true }
     compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.11.2-R0.1-SNAPSHOT') { changing = true }
