@@ -16,15 +16,45 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
- package tk.martijn_heil.wac_core
+package tk.martijn_heil.wac_core
+
+import org.bukkit.GameMode
+import org.bukkit.event.Listener
+import org.bukkit.event.EventHandler
+import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.playerPlayerGameModeChangeEvent
+
  
- import org.bukkit.event.Listener
- import org.bukkit.event.EventHandler
- 
- class GameModeSwitchingListener : Listener {
+class GameModeSwitchingListener : Listener {
      @EventHandler(ignoredCancelled = true)
      fun onPlayerMove(e: PlayerMoveEvent) {
          wp = WacPlayer.valueOf(e.player)
          if(wp.isGameModeSwitching) e.isCancelled = true
      }
+ 
+     @EventHandler(ignoreCancelled = true)
+     fun onPlayerGameModeChange(e: PlayerGameModeChangeEvent) {
+        val p = WacPlayer.valueOf(e.player)
+        if(!e.player.hasPermission(WacCore.Permission.BYPASS__GAMEMODE_SWITCH_PENALTY.toString()) && !p.isGameModeSwitching) {
+            p.isGameModeSwitching = true
+            e.player.sendMessage(ChatColor.RED.toString() + "Je bent nu aan het wisselen naar " + e.newGameMode + " mode, dit duurt 30 seconden waarin je kwetsbaar bent.")
+
+            when {
+                (e.newGameMode == GameMode.SURVIVAL || e.newGameMode == GameMode.ADVENTURE) -> {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
+                        p.isGameModeSwitching = false
+                    }, 600)
+                }
+
+                (e.newGameMode == GameMode.CREATIVE || e.newGameMode == GameMode.SPECTATOR) -> {
+                    e.isCancelled = true
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
+                        // Note: the order here is important! First set the player's gamemode, then set the switching state to false.
+                        e.player.gameMode = e.newGameMode
+                        p.isGameModeSwitching = false
+                    }, 600)
+                }
+            }
+        }
+    }
  }
