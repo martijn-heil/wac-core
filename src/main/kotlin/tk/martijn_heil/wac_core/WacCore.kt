@@ -86,6 +86,7 @@ class WacCore : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(GeneralListener(), this)
         Bukkit.getPluginManager().registerEvents(SignListener(), this)
         Bukkit.getPluginManager().registerEvents(LongTermSneakListener(), this)
+        Bukkit.getPluginManager().registerEvents(GameModeSwitchingListener(), this)
 
         logger.info("Ensuring database presence of all players currently online..")
         for (player in Bukkit.getServer().onlinePlayers) {
