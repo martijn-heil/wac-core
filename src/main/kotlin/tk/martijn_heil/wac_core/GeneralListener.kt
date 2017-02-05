@@ -68,14 +68,6 @@ class GeneralListener() : Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    fun onPlayerGameModeChange(e: PlayerGameModeChangeEvent) {
-        if(e.newGameMode == GameMode.SPECTATOR && !e.player.hasPermission(WacCore.Permission.GAMEMODE__SPECTATOR.toString())) {
-            e.isCancelled = true
-            e.player.sendMessage(ChatColor.RED.toString() + "Jij mag niet in spectator mode!")
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onPlayerGameModeChange2(e: PlayerGameModeChangeEvent) {
         val p = WacPlayer.valueOf(e.player)
         if(!e.player.hasPermission(WacCore.Permission.BYPASS__GAMEMODE_SWITCH_PENALTY.toString()) && !p.isGameModeSwitching) {
