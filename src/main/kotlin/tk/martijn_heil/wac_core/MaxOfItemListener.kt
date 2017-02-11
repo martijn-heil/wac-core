@@ -150,7 +150,7 @@ class MaxOfItemListener() : Listener {
 
     fun itemsPlacedByInventoryDragContain(m: Material, e: InventoryDragEvent): Boolean {
         e.newItems.forEach {
-            if(it.value.type == m) return true;
+            if(it.value.type == m) return true
         }
 
         return false;

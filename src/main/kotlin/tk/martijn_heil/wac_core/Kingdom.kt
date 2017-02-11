@@ -31,7 +31,8 @@ import java.util.*
 enum class Kingdom(val kingdomName: String, val factionName: String = kingdomName) {
     UNDEAD("Kronoth"),
     HUMAN_1("Astilafia"),
-    HUMAN_2("Ostrain"),
+    HUMAN_2_DARK("Dark Ostrain", "OstrainDark"),
+    HUMAN_2_LIGHT("Light Ostrain", "OstrainLight"),
     HUMAN_3("Volcair"),
     DWARVES("Dhar' Guldaruhm", "DharGuldaruhm"),
     ORCS("Zorgirhgoth"),

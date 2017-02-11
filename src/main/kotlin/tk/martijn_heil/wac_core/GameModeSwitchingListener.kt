@@ -18,23 +18,27 @@
  
 package tk.martijn_heil.wac_core
 
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.GameMode
-import org.bukkit.event.Listener
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.playerPlayerGameModeChangeEvent
 
  
 class GameModeSwitchingListener : Listener {
-     @EventHandler(ignoredCancelled = true)
+     @EventHandler(ignoreCancelled = true)
      fun onPlayerMove(e: PlayerMoveEvent) {
-         wp = WacPlayer.valueOf(e.player)
+         val wp = WacPlayer.valueOf(e.player)
          if(wp.isGameModeSwitching) e.isCancelled = true
      }
  
      @EventHandler(ignoreCancelled = true)
      fun onPlayerGameModeChange(e: PlayerGameModeChangeEvent) {
         val p = WacPlayer.valueOf(e.player)
+         if(p.isGameModeSwitching) return
+
         if(!e.player.hasPermission(WacCore.Permission.BYPASS__GAMEMODE_SWITCH_PENALTY.toString()) && !p.isGameModeSwitching) {
             p.isGameModeSwitching = true
             e.player.sendMessage(ChatColor.RED.toString() + "Je bent nu aan het wisselen naar " + e.newGameMode + " mode, dit duurt 30 seconden waarin je kwetsbaar bent.")
