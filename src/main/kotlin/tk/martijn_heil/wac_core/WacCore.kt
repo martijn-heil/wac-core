@@ -27,15 +27,15 @@ import com.sk89q.intake.parametric.provider.PrimitivesModule
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
+import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
 import tk.martijn_heil.wac_core.command.WacCoreCommands
-import tk.martijn_heil.wac_core.command.WacCoreModule
 import tk.martijn_heil.wac_core.command.common.bukkit.BukkitAuthorizer
 import tk.martijn_heil.wac_core.command.common.bukkit.BukkitUtils
 import tk.martijn_heil.wac_core.command.common.bukkit.provider.BukkitModule
 import tk.martijn_heil.wac_core.command.common.bukkit.provider.sender.BukkitSenderModule
+import tk.martijn_heil.wac_core.gamemodeswitching.GameModeSwitchingModule
 import tk.martijn_heil.wac_core.itemproperty.ItemPropertyListener
+import tk.martijn_heil.wac_core.kingdom.KingdomModule
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -44,9 +44,6 @@ import java.util.logging.Logger
 
 
 class WacCore : JavaPlugin() {
-
-    lateinit private var protocolManager: ProtocolManager
-
     override fun onEnable() {
         Companion.plugin = this
         Companion.logger = logger
@@ -85,22 +82,18 @@ class WacCore : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(MaxOfItemListener(), this)
         Bukkit.getPluginManager().registerEvents(GeneralListener(), this)
         Bukkit.getPluginManager().registerEvents(SignListener(), this)
-        Bukkit.getPluginManager().registerEvents(LongTermSneakListener(), this)
-        Bukkit.getPluginManager().registerEvents(GameModeSwitchingListener(), this)
 
         logger.info("Ensuring database presence of all players currently online..")
         for (player in Bukkit.getServer().onlinePlayers) {
             ensurePresenceInDatabase(player)
         }
 
-        playerManager = WacPlayerManager()
 
         logger.info("Building and registering commands..")
         val injector = Intake.createInjector()
         injector.install(PrimitivesModule())
         injector.install(BukkitModule(Bukkit.getServer()))
         injector.install(BukkitSenderModule())
-        injector.install(WacCoreModule())
 
         val builder = ParametricBuilder(injector)
         builder.authorizer = BukkitAuthorizer()
@@ -118,49 +111,14 @@ class WacCore : JavaPlugin() {
 
         BukkitUtils.registerDispatcher(dispatcher, this)
 
-        logger.info("Scheduling tasks..")
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
-            val loc = Kingdom.UNDEAD.home
-            val radius = 120
 
-            getPlayersInRadius(loc, radius).forEach {
-                if(WacPlayer(it).kingdom != Kingdom.UNDEAD) {
-                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 700, 1, false, false), true)
-                }
-            }
-        }, 0L, 600L)
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
-            Bukkit.getOnlinePlayers().forEach {
-                val p = WacPlayer.valueOf(it)
-                if(p.isGameModeSwitching) {
-                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 40, 1, false, false), true)
-                }
-            }
-        }, 0, 20)
 
         logger.info("Setting up ProtocolLib things..")
         protocolManager = ProtocolLibrary.getProtocolManager()
 
-//        protocolManager.addPacketListener(object : PacketAdapter(this, ListenerPriority.NORMAL, PacketType.fromLegacy(0x20, PacketType.Sender.SERVER)) {
-//            fun isElvenCityChunk(): Boolean {
-//                return false
-//            }
-//
-//            fun getFakeChunk(x: Int, y: Int) {
-//
-//            }
-//
-//            override fun onPacketSending(e: PacketEvent?) {
-//                if(e == null) return
-//                val packet = e.packet
-//
-//                packet.
-//            }
-//        })
+        KingdomModule.init(this, logger)
+        AutoSneakModule.init(protocolManager, this, logger)
+        GameModeSwitchingModule.init(this, logger)
     }
 
     companion object {
@@ -179,7 +137,7 @@ class WacCore : JavaPlugin() {
         lateinit var messages: ResourceBundle
         lateinit var logger: Logger
         lateinit var plugin: Plugin
-        lateinit var playerManager: WacPlayerManager
+        lateinit var protocolManager: ProtocolManager
     }
 
     enum class Permission(val str: String) {

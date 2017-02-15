@@ -62,3 +62,12 @@ fun getPlayersInRadius(loc: Location, radius: Int): List<Player> {
 
     return players
 }
+
+fun playerFromEntityId(entityId: Int): Player? {
+    Bukkit.getWorlds().forEach {
+        it.players.forEach {
+            if(it.entityId == entityId) return it
+        }
+    }
+    return null
+}

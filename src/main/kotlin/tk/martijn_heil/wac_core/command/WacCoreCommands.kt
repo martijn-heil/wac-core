@@ -20,8 +20,9 @@ package tk.martijn_heil.wac_core.command
 
 import com.sk89q.intake.Command
 import com.sk89q.intake.Require
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
-import tk.martijn_heil.wac_core.WacPlayer
+import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
 import tk.martijn_heil.wac_core.command.common.Sender
 import tk.martijn_heil.wac_core.command.common.Target
 
@@ -30,8 +31,9 @@ class WacCoreCommands {
 
     @Command(aliases = arrayOf("sneak"), desc = "Toggle sneak")
     @Require("wac-core.command.sneak")
-    fun sneak(@Sender sender: CommandSender, @Target("wac-core.command.sneak.others") target: WacPlayer) {
-        target.isLongTermSneaking = !target.isLongTermSneaking
-        sender.sendMessage(target.offlinePlayer.name + if(target.isLongTermSneaking) " is now sneaking." else " is no longer sneaking.")
+    fun sneak(@Sender sender: CommandSender, @Target("wac-core.command.sneak.others") target: OfflinePlayer) {
+        val newValue = !AutoSneakModule.isAutoSneaking(target)
+        AutoSneakModule.setAutoSneaking(target, newValue)
+        sender.sendMessage(target.name + if(newValue) " is now sneaking." else " is no longer sneaking.")
     }
 }

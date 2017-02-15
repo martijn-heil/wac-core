@@ -18,7 +18,9 @@
 
 package tk.martijn_heil.wac_core
 
-import org.bukkit.*
+import org.bukkit.ChatColor
+import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -26,11 +28,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.player.PlayerGameModeChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
+import tk.martijn_heil.wac_core.kingdom.KingdomModule
 
 
 class GeneralListener() : Listener {
@@ -40,7 +42,7 @@ class GeneralListener() : Listener {
      */
     @EventHandler(ignoreCancelled = true)
     fun onEntityTarget(e: EntityTargetEvent) {
-        if (e.target is Player && WacPlayer.valueOf(e.target as Player).kingdom == Kingdom.UNDEAD ) {
+        if (e.target is Player && KingdomModule.getKingdom(e.target as Player) == KingdomModule.Kingdom.UNDEAD ) {
             e.isCancelled = true
         }
     }
@@ -76,7 +78,7 @@ class GeneralListener() : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onUndeadUseSoundWand(e: PlayerInteractEvent) {
-        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && WacPlayer.valueOf(e.player).kingdom == Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
+        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && KingdomModule.getKingdom(e.player) == KingdomModule.Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
                 e.player.inventory.itemInMainHand.hasItemMeta() && e.player.inventory.itemInMainHand.itemMeta.hasDisplayName() &&
         e.player.inventory.itemInMainHand.itemMeta.displayName == ChatColor.GOLD.toString() + "SoundWand") {
 

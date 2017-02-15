@@ -25,6 +25,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import tk.martijn_heil.wac_core.kingdom.KingdomModule
 
 
 class SignListener : Listener {
@@ -38,7 +39,7 @@ class SignListener : Listener {
                 return
             }
 
-            val kingdom = Kingdom.fromKingdomName(e.lines[1])
+            val kingdom = KingdomModule.Kingdom.fromKingdomName(e.lines[1])
             if (kingdom == null) {
                 e.player.sendMessage(ChatColor.RED.toString() + "Kingdom \"" + e.getLine(1) + "\" bestaat niet!")
                 return
@@ -56,22 +57,20 @@ class SignListener : Listener {
         if(e.hasBlock() && e.clickedBlock.state is Sign &&
                 (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {
 
-            val p = WacPlayer.valueOf((e.player))
-
-            if(p.kingdom != null) {
+            if(KingdomModule.getKingdom(e.player) != null) {
                 e.player.sendMessage(ChatColor.RED.toString() + "Je zit al in een kingdom! " +
                         "Als je per ongeluk het verkeerde kingdom bent gejoined, neem dan contact op met een staff lid.")
                 return
             }
 
             val kingdomName = ChatColor.stripColor((e.clickedBlock.state as Sign).getLine(2))
-            val kd = Kingdom.fromKingdomName(kingdomName)
+            val kd = KingdomModule.Kingdom.fromKingdomName(kingdomName)
             if(kd == null) {
                 e.player.sendMessage(ChatColor.RED.toString() + "Dit kingdom kon niet gevonden worden, neem contact op met een staff lid.")
                 return
             }
 
-            p.kingdom = kd
+            KingdomModule.setKingdom(e.player, kd)
             e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.kingdomName + " gejoined. " +
                     "Doe " + ChatColor.RED + "/f home" + ChatColor.GOLD + " om naar de kingdom spawn te gaan!")
         }
