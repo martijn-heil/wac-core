@@ -58,3 +58,4 @@ crashlytics-build.properties
 fabric.properties
 
 src/main/kotlin/tk/martijn_heil/wac_core/tmpUtil.kt
+src/main/kotlin/tk/martijn_heil/wac_core/sail/

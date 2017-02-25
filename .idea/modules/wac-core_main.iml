@@ -13,7 +13,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/MassiveCore.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/Factions.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -22,7 +22,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/Factions.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/bcpkix-jdk15on-1.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/MassiveCore.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -40,6 +49,38 @@
     <orderEntry type="library" name="Gradle: com.comphenix.packetwrapper:PacketWrapper:1.11-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: cglib:cglib-nodep:2.2.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.milkbowl.vault:VaultAPI:1.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.protocol:ProtocolLib-API:4.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.avaje:ebean:2.8.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.executors:BukkitExecutors:1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.3.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bukkit:bukkit:1.11.2-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.persistence:persistence-api:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.yaml:snakeyaml:1.17" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-chat:1.10-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/bcpg-jdk15on-1.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="PROVIDED">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/Factions.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.protocol:ProtocolLib:4.2.0" level="project" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
@@ -51,28 +92,113 @@
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="Gradle: junit:junit:4.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-chat:1.10-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.yaml:snakeyaml:1.17" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.persistence:persistence-api:1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.bukkit:bukkit:1.11.2-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.3.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.executors:BukkitExecutors:1.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.avaje:ebean:2.8.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spigotmc:spigot-api:1.11.2-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.protocol:ProtocolLib-API:4.2.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.milkbowl.vault:VaultAPI:1.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: cglib:cglib-nodep:2.2.2" level="project" />
-    <orderEntry type="module-library" scope="PROVIDED">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/Factions.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/bcprov-jdk15on-1.54.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.comphenix.protocol:ProtocolLib:4.2.0" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/slf4j-api-1.7.16.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/slf4j-jdk14-1.7.16.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/sshd-core-1.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/tomcat-apr-5.5.23.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/bcpg-jdk15on-1.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/bcpkix-jdk15on-1.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/bcprov-jdk15on-1.54.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/slf4j-api-1.7.16.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/slf4j-jdk14-1.7.16.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/sshd-core-1.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/tomcat-apr-5.5.23.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -24,8 +24,15 @@ import com.massivecraft.factions.entity.FactionColl
 import com.massivecraft.factions.entity.MPlayer
 import com.massivecraft.massivecore.ps.PS
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
+import org.bukkit.block.Sign
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.block.SignChangeEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -43,6 +50,10 @@ object KingdomModule {
         this.plugin = plugin
         this.logger = logger
         logger.info("Initializing KingdomModule..")
+
+        logger.info("Registering event listeners..")
+        plugin.server.pluginManager.registerEvents(SignListener, plugin)
+
 
         logger.info("Scheduling tasks..")
         plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
@@ -115,6 +126,55 @@ object KingdomModule {
             fun fromKingdomName(name: String): Kingdom? {
                 values().forEach { if(it.kingdomName == name) return it }
                 return null
+            }
+        }
+    }
+
+    private object SignListener : Listener {
+
+        @EventHandler(ignoreCancelled = true)
+        fun onSignPlace(e: SignChangeEvent) {
+            if(e.getLine(0) == "[JoinKingdom]") {
+                if(!e.player.hasPermission("wac-core.signs.joinkingdom.create")) {
+                    e.player.sendMessage(ChatColor.RED.toString() + "Je hebt geen toestemming om een join kingdom bordje te maken!")
+                    e.isCancelled = true
+                    return
+                }
+
+                val kingdom = KingdomModule.Kingdom.fromKingdomName(e.lines[1])
+                if (kingdom == null) {
+                    e.player.sendMessage(ChatColor.RED.toString() + "Kingdom \"" + e.getLine(1) + "\" bestaat niet!")
+                    return
+                }
+
+                e.setLine(0, ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]")
+                e.setLine(1, ChatColor.BLUE.toString() + "Klik hier om")
+                e.setLine(2, ChatColor.AQUA.toString() + kingdom.kingdomName)
+                e.setLine(3, ChatColor.BLUE.toString() + "te joinen.")
+            }
+        }
+
+        @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+        fun onClickSign(e: PlayerInteractEvent) {
+            if(e.hasBlock() && e.clickedBlock.state is Sign &&
+                    (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {
+
+                if(KingdomModule.getKingdom(e.player) != null) {
+                    e.player.sendMessage(ChatColor.RED.toString() + "Je zit al in een kingdom! " +
+                            "Als je per ongeluk het verkeerde kingdom bent gejoined, neem dan contact op met een staff lid.")
+                    return
+                }
+
+                val kingdomName = ChatColor.stripColor((e.clickedBlock.state as Sign).getLine(2))
+                val kd = KingdomModule.Kingdom.fromKingdomName(kingdomName)
+                if(kd == null) {
+                    e.player.sendMessage(ChatColor.RED.toString() + "Dit kingdom kon niet gevonden worden, neem contact op met een staff lid.")
+                    return
+                }
+
+                KingdomModule.setKingdom(e.player, kd)
+                e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.kingdomName + " gejoined. " +
+                        "Doe " + ChatColor.RED + "/f home" + ChatColor.GOLD + " om naar de kingdom spawn te gaan!")
             }
         }
     }
