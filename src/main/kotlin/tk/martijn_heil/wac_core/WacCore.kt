@@ -24,11 +24,12 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
-import tk.martijn_heil.wac_core.command.CommandModule
+import tk.martijn_heil.wac_core.craft.SailingModule
 import tk.martijn_heil.wac_core.gamemodeswitching.GameModeSwitchingModule
 import tk.martijn_heil.wac_core.gameplay.GamePlayControlModule
 import tk.martijn_heil.wac_core.general.GeneralModule
 import tk.martijn_heil.wac_core.kingdom.KingdomModule
+import tk.martijn_heil.wac_core.temporary.TemporaryModule
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -56,8 +57,11 @@ class WacCore : JavaPlugin() {
         // Due to that the whole plugin crashed on startup.
         val hackyLoader = HackyClassLoader(this.classLoader)
         val cls = hackyLoader.loadClass("tk.martijn_heil.wac_core.HackyClass")
-        cls!!.getMethod("doStuff", String::class.java, String::class.java, String::class.java, ClassLoader::class.java).invoke(null, dbUrl, dbUsername, dbPassword, this.classLoader)
-
+        val migrationResult = cls!!.getMethod("doStuff", String::class.java, String::class.java, String::class.java, ClassLoader::class.java).invoke(null, dbUrl, dbUsername, dbPassword, this.classLoader) as Boolean
+        if(!migrationResult) {
+            this.isEnabled = false
+            return
+        }
 
         try {
             WacCore.dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
@@ -65,6 +69,7 @@ class WacCore : JavaPlugin() {
             WacCore.logger.severe(ex.message)
             WacCore.logger.severe("Disabling plugin due to database error..")
             this.isEnabled = false
+            return
         }
 
 
@@ -85,7 +90,13 @@ class WacCore : JavaPlugin() {
         GameModeSwitchingModule.init(this, logger)
         GeneralModule.init(this, logger)
         GamePlayControlModule.init(this, logger)
-        CommandModule.init(this, logger)
+        //CommandModule.init(this, logger)
+        SailingModule.init()
+        TemporaryModule.init(this)
+    }
+
+    override fun onDisable() {
+        SailingModule.close()
     }
 
     companion object {
@@ -110,7 +121,8 @@ class WacCore : JavaPlugin() {
     enum class Permission(val str: String) {
         BYPASS__ITEM_LIMIT("wac-core.bypass.item-limit"),
         BYPASS__GAMEMODE_SWITCH_PENALTY("wac-core.bypass.gamemode-switch-penalty"),
-        GAMEMODE__SPECTATOR("wac-core.gamemode.spectator");
+        GAMEMODE__SPECTATOR("wac-core.gamemode.spectator"),
+        BYPASS_OCEAN_BUILD_LIMITS("wac-core.bypass.ocean-build-limits");
 
         override fun toString() = str
     }

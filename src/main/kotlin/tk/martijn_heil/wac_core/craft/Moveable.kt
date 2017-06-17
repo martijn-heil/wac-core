@@ -16,24 +16,14 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tk.martijn_heil.wac_core.general
+package tk.martijn_heil.wac_core.craft
 
-import org.bukkit.plugin.Plugin
-import tk.martijn_heil.wac_core.general.itemproperty.ItemPropertyListener
-import java.util.logging.Logger
+import org.bukkit.entity.Player
 
 
-object GeneralModule {
-    lateinit private var plugin: Plugin
-    lateinit private var logger: Logger
+interface Moveable {
+    val speed: Double // Speed in metres per hour
+    val heading: Int // Heading in degrees
 
-    fun init(plugin: Plugin, logger: Logger) {
-        this.plugin = plugin
-        this.logger = logger
-
-        logger.info("Registering event listeners..")
-        plugin.server.pluginManager.registerEvents(ItemPropertyListener(), plugin)
-        plugin.server.pluginManager.registerEvents(MaxOfItemListener(), plugin)
-        plugin.server.pluginManager.registerEvents(GeneralListener(logger, plugin), plugin)
-    }
+    val onBoard: List<Player> // TODO better offline player
 }

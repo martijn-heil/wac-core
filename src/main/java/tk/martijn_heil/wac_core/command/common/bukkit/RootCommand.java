@@ -29,7 +29,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.permissions.Permissible;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
@@ -39,23 +38,9 @@ public class RootCommand extends BukkitCommand
     private Dispatcher dispatcher;
 
 
-    public static RootCommand of(Dispatcher dispatcher)
+    public RootCommand(Dispatcher dispatcher, List<String> aliases)
     {
-        String prefix = dispatcher.getPrimaryAliases().iterator().next();
-        String description = dispatcher.getDescription().getShortDescription();
-        String usage = dispatcher.getDescription().getUsage();
-        List<String> aliases = new ArrayList<>(dispatcher.getAliases());
-
-        prefix = prefix != null ? prefix : "";
-        description = description != null ? description : "";
-        usage = usage != null ? usage : "";
-
-        return new RootCommand(dispatcher, prefix, description, usage, aliases);
-    }
-
-    private RootCommand(Dispatcher dispatcher, String prefix, String description, String usage, List<String> aliases)
-    {
-        super(prefix, description, usage, aliases);
+        super(aliases.get(0), dispatcher.getDescription().getShortDescription(), dispatcher.getDescription().getUsage(), aliases);
         this.dispatcher = dispatcher;
     }
 

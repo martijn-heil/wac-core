@@ -25,10 +25,11 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class BukkitUtils
 {
-    public static void registerDispatcher(Dispatcher dispatcher, Plugin plugin)
+    public static void registerDispatcher(Dispatcher dispatcher, Plugin plugin, List<String> aliases)
     {
         try
         {
@@ -37,7 +38,7 @@ public class BukkitUtils
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
-            commandMap.register(plugin.getName().toLowerCase(), RootCommand.of(dispatcher));
+            commandMap.register(plugin.getName().toLowerCase(), new RootCommand(dispatcher, aliases));
         }
         catch (IllegalAccessException | NoSuchFieldException e)
         {

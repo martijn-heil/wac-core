@@ -20,40 +20,39 @@ package tk.martijn_heil.wac_core.general
 
 import org.bukkit.ChatColor
 import org.bukkit.Material
-import org.bukkit.Sound
-import org.bukkit.entity.*
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Ocelot
+import org.bukkit.entity.Tameable
+import org.bukkit.entity.Wolf
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.block.Action
 import org.bukkit.event.entity.CreatureSpawnEvent
-import org.bukkit.event.entity.EntityTargetEvent
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
-import tk.martijn_heil.wac_core.WacCore
-import tk.martijn_heil.wac_core.ensurePresenceInDatabase
-import tk.martijn_heil.wac_core.getPlayersInRadius
-import tk.martijn_heil.wac_core.kingdom.KingdomModule
+import org.bukkit.plugin.Plugin
+import java.util.logging.Logger
 
 
-class GeneralListener() : Listener {
+class GeneralListener(val logger: Logger, val plugin: Plugin) : Listener {
 
-    /**
-     * Undead are not targeted by mobs.
-     */
-    @EventHandler(ignoreCancelled = true)
-    fun onEntityTarget(e: EntityTargetEvent) {
-        if (e.target is Player && KingdomModule.getKingdom(e.target as Player) == KingdomModule.Kingdom.UNDEAD) {
-            e.isCancelled = true
-        }
-    }
+//    private val clearedChunks = HashSet<Int>()
+//
+//    init {
+//        logger.info("Adding all cleared chunks in the database to the in-memory cache..")
+//        val stmnt = WacCore.dbconn!!.prepareStatement("SELECT * FROM wac_core_cleared_chunks")
+//        val result = stmnt.executeQuery()
+//        while(result.next()) {
+//            clearedChunks.add(result.getInt("coordinates"))
+//        }
+//    }
+
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerLogin(e: PlayerJoinEvent) {
-        WacCore.logger.fine("Ensuring that " + e.player.name + " is present in database..")
-        ensurePresenceInDatabase(e.player)
+        logger.fine("Ensuring that " + e.player.name + " is present in database..")
+        //ensurePresenceInDatabase(e.player)
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -79,17 +78,6 @@ class GeneralListener() : Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    fun onUndeadUseSoundWand(e: PlayerInteractEvent) {
-        if((e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) && KingdomModule.getKingdom(e.player) == KingdomModule.Kingdom.UNDEAD && e.player.inventory.itemInMainHand != null &&
-                e.player.inventory.itemInMainHand.hasItemMeta() && e.player.inventory.itemInMainHand.itemMeta.hasDisplayName() &&
-        e.player.inventory.itemInMainHand.itemMeta.displayName == ChatColor.GOLD.toString() + "SoundWand") {
-
-            getPlayersInRadius(e.player.location, 200).forEach {
-                it.playSound(it.location, Sound.ENTITY_ENDERDRAGON_DEATH, 10.0f, 1.0f)
-            }
-        }
-    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerTeleport(e: PlayerTeleportEvent) {
@@ -99,4 +87,45 @@ class GeneralListener() : Listener {
             }
         }
     }
+
+//    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+//    fun onChunkLoad(e: ChunkLoadEvent) {
+//        if(!clearedChunks.contains(encodeChunkCoords(e.chunk.x, e.chunk.z))) {
+//            logger.info("Clearing chunk.. (x: " + e.chunk.x + ", z: " + e.chunk.z + ")")
+//            clearChunk(e.chunk)
+//
+//            val encoded = encodeChunkCoords(e.chunk.x, e.chunk.z)
+//            clearedChunks.add(encoded)
+//
+//            @Suppress("DEPRECATION")
+//            plugin.server.scheduler.scheduleAsyncDelayedTask(plugin, {
+//                val stmnt = WacCore.dbconn!!.prepareStatement("INSERT INTO wac_core_cleared_chunks VALUES(?)")
+//                stmnt.setInt(1, encoded)
+//                stmnt.executeUpdate()
+//            }, 0)
+//        }
+//    }
+
+//    private fun encodeChunkCoords(x: Int, z: Int): Int {
+//        return z or (x shl 16)
+//    }
+//
+//    private fun decodeChunkCoords(data: Int): Pair<Int, Int> {
+//        val x = data ushr 16
+//        val z = data or 0b00000000000000001111111111111111
+//        return Pair(x, z)
+//    }
+//
+//    private fun clearChunk(chunk: Chunk) {
+//        for(y in 0..255) {
+//            for(x in 0..15) {
+//                for(z in 0..15) {
+//                    val block = chunk.getBlock(x, y, z)
+//                    if(block.state is InventoryHolder) {
+//                        (block.state as InventoryHolder).inventory.clear()
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

@@ -34,9 +34,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.SignChangeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
-import tk.martijn_heil.wac_core.getPlayersInRadius
 import java.util.*
 import java.util.logging.Logger
 
@@ -53,22 +50,6 @@ object KingdomModule {
 
         logger.info("Registering event listeners..")
         plugin.server.pluginManager.registerEvents(SignListener, plugin)
-
-
-        logger.info("Scheduling tasks..")
-        plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
-            val loc = Kingdom.UNDEAD.home
-            val radius = 120
-
-            getPlayersInRadius(loc, radius).forEach {
-                if(getKingdom(it) != Kingdom.UNDEAD) {
-                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 700, 1, false, false), true)
-                    it.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 700, 1, false, false), true)
-                }
-            }
-        }, 0L, 600L)
     }
 
     fun getKingdom(p: OfflinePlayer): Kingdom? = Kingdom.fromFaction(MPlayer.get(p.uniqueId).faction)
@@ -79,20 +60,20 @@ object KingdomModule {
     }
 
 
-    enum class Kingdom(val kingdomName: String, val factionName: String = kingdomName) {
-        UNDEAD("Kronoth"),
-        HUMAN_1("Astilafia"),
-        HUMAN_2_DARK("Dark Ostrain", "OstrainDark"),
-        HUMAN_2_LIGHT("Light Ostrain", "OstrainLight"),
-        HUMAN_3("Volcair"),
-        DWARVES("Dhar' Guldaruhm", "DharGuldaruhm"),
-        ORCS("Zorgirhgoth"),
-        GOBLINS("Krulk"),
-        OGRES("Vrewikur");
+    enum class Kingdom(val displayName: String, val simpleName: String = displayName) {
+        GREECE("Griekenland"),
+        ROME("Rome"),
+        MACEDON("Macedonië", "Macedonie"),
+        GAUL("Gallië", "Gallie"),
+        GERMANIA("Germanië", "Germanie"),
+        BRITANNIA("Britannië", "Britannie"),
+        PERSIA("Perzië", "Perzie"),
+        CARTHAGE("Carthago"),
+        EGYPT("Egypte");
 
         val faction: Faction
             get() {
-                return FactionColl.get().getByName(factionName) ?: throw RuntimeException("Faction " + this.factionName + " could not be found for kingdom " + this.name + ".")
+                return FactionColl.get().getByName(simpleName) ?: throw RuntimeException("Faction " + this.simpleName + " could not be found for kingdom " + this.name + ".")
             }
 
 
@@ -123,8 +104,8 @@ object KingdomModule {
                 return null
             }
 
-            fun fromKingdomName(name: String): Kingdom? {
-                values().forEach { if(it.kingdomName == name) return it }
+            fun fromSimpleName(name: String): Kingdom? {
+                values().forEach { if(it.simpleName == name) return it }
                 return null
             }
         }
@@ -141,7 +122,7 @@ object KingdomModule {
                     return
                 }
 
-                val kingdom = KingdomModule.Kingdom.fromKingdomName(e.lines[1])
+                val kingdom = KingdomModule.Kingdom.fromSimpleName(e.lines[1])
                 if (kingdom == null) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Kingdom \"" + e.getLine(1) + "\" bestaat niet!")
                     return
@@ -149,7 +130,7 @@ object KingdomModule {
 
                 e.setLine(0, ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]")
                 e.setLine(1, ChatColor.BLUE.toString() + "Klik hier om")
-                e.setLine(2, ChatColor.AQUA.toString() + kingdom.kingdomName)
+                e.setLine(2, ChatColor.AQUA.toString() + kingdom.simpleName)
                 e.setLine(3, ChatColor.BLUE.toString() + "te joinen.")
             }
         }
@@ -166,14 +147,14 @@ object KingdomModule {
                 }
 
                 val kingdomName = ChatColor.stripColor((e.clickedBlock.state as Sign).getLine(2))
-                val kd = KingdomModule.Kingdom.fromKingdomName(kingdomName)
+                val kd = KingdomModule.Kingdom.fromSimpleName(kingdomName)
                 if(kd == null) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Dit kingdom kon niet gevonden worden, neem contact op met een staff lid.")
                     return
                 }
 
                 KingdomModule.setKingdom(e.player, kd)
-                e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.kingdomName + " gejoined. " +
+                e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.displayName + " gejoined. " +
                         "Doe " + ChatColor.RED + "/f home" + ChatColor.GOLD + " om naar de kingdom spawn te gaan!")
             }
         }

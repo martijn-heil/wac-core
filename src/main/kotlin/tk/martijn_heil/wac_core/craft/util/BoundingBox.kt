@@ -16,24 +16,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tk.martijn_heil.wac_core.general
+package tk.martijn_heil.wac_core.craft.util
 
-import org.bukkit.plugin.Plugin
-import tk.martijn_heil.wac_core.general.itemproperty.ItemPropertyListener
-import java.util.logging.Logger
+import org.bukkit.Location
+import org.bukkit.block.Block
 
 
-object GeneralModule {
-    lateinit private var plugin: Plugin
-    lateinit private var logger: Logger
+class BoundingBox(var minY: Double, var maxY: Double, var minX: Double, var maxX: Double, var minZ: Double, var maxZ: Double) : Cloneable {
 
-    fun init(plugin: Plugin, logger: Logger) {
-        this.plugin = plugin
-        this.logger = logger
+    fun contains(b: Block) = b.x >= minX && b.x <= maxX && b.y >= minY && b.y <= maxY && b.z >= minZ && b.z <= maxZ
+    fun contains(loc: Location) = loc.x >= minX && loc.x <= maxX && loc.y >= minY && loc.y <= maxY && loc.z >= minZ && loc.z <= maxZ
 
-        logger.info("Registering event listeners..")
-        plugin.server.pluginManager.registerEvents(ItemPropertyListener(), plugin)
-        plugin.server.pluginManager.registerEvents(MaxOfItemListener(), plugin)
-        plugin.server.pluginManager.registerEvents(GeneralListener(logger, plugin), plugin)
-    }
+    override fun clone() = BoundingBox(minY, maxY, minX, maxX, minZ, maxZ)
 }

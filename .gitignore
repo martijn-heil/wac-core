@@ -59,3 +59,6 @@ fabric.properties
 
 src/main/kotlin/tk/martijn_heil/wac_core/tmpUtil.kt
 src/main/kotlin/tk/martijn_heil/wac_core/sail/
+lib/Cannons.jar
+lib/PacketWrapper.jar
+lib/spigot-1.11.2.jar

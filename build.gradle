@@ -72,10 +72,11 @@ dependencies {
     compile 'org.flywaydb:flyway-core:4.0.3'
 
     compileOnly fileTree(dir: 'lib', include: '*.jar')
+    compile fileTree(dir: 'lib', include: 'PacketWrapper.jar')
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.2.0'
-    compile 'com.comphenix.packetwrapper:PacketWrapper:1.11-R0.1-SNAPSHOT'
+    //compile 'com.comphenix.packetwrapper:PacketWrapper:1.11-R0.1-SNAPSHOT'
 
     compileOnly(group: 'org.spigotmc', name: 'spigot-api', version: '1.11.2-R0.1-SNAPSHOT') { changing = true }
     compileOnly(group: 'org.bukkit', name: 'bukkit', version: '1.11.2-R0.1-SNAPSHOT') { changing = true }

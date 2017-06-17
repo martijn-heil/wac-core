@@ -26,9 +26,23 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
+import com.sk89q.intake.Command
+import com.sk89q.intake.Intake
+import com.sk89q.intake.Require
+import com.sk89q.intake.fluent.CommandGraph
+import com.sk89q.intake.parametric.ParametricBuilder
+import com.sk89q.intake.parametric.provider.PrimitivesModule
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import tk.martijn_heil.wac_core.command.CommandModule
+import tk.martijn_heil.wac_core.command.common.Sender
+import tk.martijn_heil.wac_core.command.common.Target
+import tk.martijn_heil.wac_core.command.common.bukkit.BukkitAuthorizer
+import tk.martijn_heil.wac_core.command.common.bukkit.provider.BukkitModule
+import tk.martijn_heil.wac_core.command.common.bukkit.provider.sender.BukkitSenderModule
 import tk.martijn_heil.wac_core.playerFromEntityId
 import java.util.*
 import java.util.logging.Logger
@@ -69,6 +83,28 @@ object AutoSneakModule {
                 }
             }
         })
+
+
+        logger.info("Building and registering commands..")
+        val injector = Intake.createInjector()
+        injector.install(PrimitivesModule())
+        injector.install(BukkitModule(Bukkit.getServer()))
+        injector.install(BukkitSenderModule())
+
+        val builder = ParametricBuilder(injector)
+        builder.authorizer = BukkitAuthorizer()
+
+
+        val dispatcher = CommandGraph()
+                .builder(builder)
+                .commands()
+                .group("sneak")
+                .registerMethods(SneakCommands)
+                .parent()
+                .graph()
+                .dispatcher
+
+        CommandModule.registerDispatcher(dispatcher)
     }
 
     fun setAutoSneaking(op: OfflinePlayer, value: Boolean) {
@@ -98,6 +134,16 @@ object AutoSneakModule {
 
         for (observer in protocolManager.getEntityTrackers(p)) {
             protocolManager.sendServerPacket(observer, packet.handle)
+        }
+    }
+
+    private object SneakCommands {
+        @Command(aliases = arrayOf("toggle"), desc = "Toggle sneak")
+        @Require("wac-core.command.sneak.toggle")
+        fun toggle(@Sender sender: CommandSender, @Target("wac-core.command.sneak.toggle.others") target: OfflinePlayer) {
+            val newValue = !AutoSneakModule.isAutoSneaking(target)
+            AutoSneakModule.setAutoSneaking(target, newValue)
+            sender.sendMessage(target.name + if(newValue) " is now sneaking." else " is no longer sneaking.")
         }
     }
 }

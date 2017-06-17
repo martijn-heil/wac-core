@@ -18,47 +18,26 @@
 
 package tk.martijn_heil.wac_core.command
 
-import com.sk89q.intake.Intake
-import com.sk89q.intake.fluent.CommandGraph
-import com.sk89q.intake.parametric.ParametricBuilder
-import com.sk89q.intake.parametric.provider.PrimitivesModule
-import org.bukkit.Bukkit
+import com.sk89q.intake.dispatcher.Dispatcher
+import com.sk89q.intake.dispatcher.SimpleDispatcher
 import org.bukkit.plugin.Plugin
-import tk.martijn_heil.wac_core.command.common.bukkit.BukkitAuthorizer
 import tk.martijn_heil.wac_core.command.common.bukkit.BukkitUtils
-import tk.martijn_heil.wac_core.command.common.bukkit.provider.BukkitModule
-import tk.martijn_heil.wac_core.command.common.bukkit.provider.sender.BukkitSenderModule
 import java.util.logging.Logger
 
 
 object CommandModule {
     lateinit private var plugin: Plugin
     lateinit private var logger: Logger
+    private var dispatcher = SimpleDispatcher()
 
     fun init(plugin: Plugin, logger: Logger) {
         this.plugin = plugin
         this.logger = logger
+        logger.info("Initializing CommandModule..")
+        BukkitUtils.registerDispatcher(dispatcher, plugin, listOf("wac-core", "wac", "lg", "luchtgames", "nin"))
+    }
 
-        logger.info("Building and registering commands..")
-        val injector = Intake.createInjector()
-        injector.install(PrimitivesModule())
-        injector.install(BukkitModule(Bukkit.getServer()))
-        injector.install(BukkitSenderModule())
-
-        val builder = ParametricBuilder(injector)
-        builder.authorizer = BukkitAuthorizer()
-
-
-        val dispatcher = CommandGraph()
-                .builder(builder)
-                .commands()
-                .group("wac-core", "wac", "lg", "luchtgames")
-                .registerMethods(WacCoreCommands())
-                .parent()
-                .graph()
-                .dispatcher
-
-
-        BukkitUtils.registerDispatcher(dispatcher, plugin)
+    fun registerDispatcher(dispatcher: Dispatcher) {
+        dispatcher.registerCommand(dispatcher)
     }
 }

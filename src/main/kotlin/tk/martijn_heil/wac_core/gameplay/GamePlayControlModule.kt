@@ -20,16 +20,19 @@ package tk.martijn_heil.wac_core.gameplay
 
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.attribute.Attribute
 import org.bukkit.block.Biome
 import org.bukkit.block.BlockFace
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Horse
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.vehicle.VehicleEnterEvent
 import org.bukkit.plugin.Plugin
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 import java.util.logging.Logger
 
 
@@ -91,6 +94,17 @@ object GamePlayControlModule {
                 }
             }
         }, 0, 20)
+
+        plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
+            plugin.server.worlds.forEach {
+                it.getEntitiesByClass(Horse::class.java).forEach {
+                    val attr = it.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+                    if(attr.baseValue < 60) {
+                        attr.baseValue = ThreadLocalRandom.current().nextInt(60, 80 + 1).toDouble()
+                    }
+                }
+            }
+        }, 0, 100)
     }
 
     private object GeneralGamePlayControlListener : Listener {
@@ -105,5 +119,39 @@ object GamePlayControlModule {
                 e.deathMessage = e.entity.name + " drowned."
             }
         }
+
+//        @EventHandler(ignoreCancelled = true)
+//        fun onBlockPlace(e: BlockPlaceEvent) {
+//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.DEEP_OCEAN) &&
+//                    !e.block.getRelative(BlockFace.DOWN).isLiquid && e.block.getRelative(BlockFace.UP).isLiquid && e.block.location.y <= e.block.world.seaLevel &&
+//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
+//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str))
+//            {
+//                e.isCancelled = true
+//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blok plaatsen.")
+//            }
+//        }
+
+//        @EventHandler(ignoreCancelled = true)
+//        fun onBlockPlace(e: BlockPlaceEvent) {
+//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.FROZEN_OCEAN) &&
+//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
+//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str) &&
+//                    e.block.location.y <= e.block.world.seaLevel) {
+//                e.isCancelled = true
+//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blok plaatsen.")
+//            }
+//        }
+//
+//        @EventHandler(ignoreCancelled = true)
+//        fun onBlockBreak(e: BlockBreakEvent) {
+//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.FROZEN_OCEAN) &&
+//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
+//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str) &&
+//                    e.block.location.y < e.block.world.seaLevel) {
+//                e.isCancelled = true
+//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blokken slopen.")
+//            }
+//        }
     }
 }
