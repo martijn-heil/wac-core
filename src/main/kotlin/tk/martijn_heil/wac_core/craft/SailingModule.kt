@@ -71,7 +71,7 @@ object SailingModule : AutoCloseable {
                             e.clickedBlock.type == Material.SIGN_POST ||
                             e.clickedBlock.type == Material.WALL_SIGN) && (e.clickedBlock.state as Sign).lines[0] == "[Ship]") {
                 try {
-                    ships.add(SimpleSailingVessel(WacCore.logger, e.clickedBlock.location))
+                    ships.add(SimpleSailingVessel.detect(WacCore.logger, e.clickedBlock.location))
                 } catch(ex: IllegalStateException) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                 } catch(ex: Exception) {

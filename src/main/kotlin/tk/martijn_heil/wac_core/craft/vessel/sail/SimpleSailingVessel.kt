@@ -70,51 +70,51 @@ import java.util.logging.Logger
 TODO:
     Fix: Ship filling up with water if under water line.
  */
-class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : Ship, HasSail, HasRudder, AutoCloseable {
-    private var world: World = detectionLoc.world
-    private var allowedBlocks: Collection<Material> = Material.values().filter { it != AIR && it != WATER && it != STATIONARY_WATER && it != LAVA && it != STATIONARY_LAVA }
-    private var rudder: SimpleRudder
-    private var blocks: ArrayList<Block> = ArrayList()
-    private val normalMaxSpeed: Int = 10000                     // in metres per hour
-    private var speedPerSquareMetreOfSail: Double               // in metres per hour
-    private val accelerationPerUpdate: Int = normalMaxSpeed / 8 // in metres per hour
-    private val decelerationPerUpdate: Int = normalMaxSpeed / 8 // in metres per hour
-    private val updateInterval = 40                             // interval in Minecraft game ticks. A single tick is 50ms
-    private var rotationPoint: Location
-    private var updateTaskId = 0
-    private var boundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+open class SimpleSailingVessel protected constructor(private val logger: Logger, private val detectionLoc: Location) : Ship, HasSail, HasRudder, AutoCloseable {
+    lateinit open protected var world: World
+    open protected var allowedBlocks: Collection<Material> = Material.values().filter { it != AIR && it != WATER && it != STATIONARY_WATER && it != LAVA && it != STATIONARY_LAVA }
+    lateinit open protected var rudder: SimpleRudder
+    open protected var blocks: ArrayList<Block> = ArrayList()
+    open protected var normalMaxSpeed: Int = 10000                     // in metres per hour
+    open protected var speedPerSquareMetreOfSail: Double = 0.0         // in metres per hour
+    open protected val accelerationPerUpdate: Int get() = normalMaxSpeed / 8 // in metres per hour
+    open protected val decelerationPerUpdate: Int get() = normalMaxSpeed / 8 // in metres per hour
+    open protected var updateInterval = 40                             // interval in Minecraft game ticks. A single tick is 50ms
+    lateinit open protected var rotationPoint: Location
+    open protected var updateTaskId = 0
+    open protected var boundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     override val sails = ArrayList<SimpleSail>()
     override val minWindAngle = 40
-    private val maxSize = 5000
-    private var isUpdatingLocation = false
+    open protected var maxSize = 5000
+    open protected var isUpdatingLocation = false
         set(value) {
             sails.forEach { it.isUpdatingLocation = value }
             rudder.isUpdatingLocation = value
             field = value
         }
 
-    private val currentMaxSpeed: Double
+    open protected val currentMaxSpeed: Double
         get() = currentSailSurfaceArea * speedPerSquareMetreOfSail
 
-    private val currentSailSurfaceArea: Int
+    open protected val currentSailSurfaceArea: Int
         get() {
             var surfaceArea = 0
             sails.forEach { surfaceArea += it.currentSurfaceArea }
             return surfaceArea
         }
 
-    private val distancePerUpdate: Double
+    open protected val distancePerUpdate: Double
         get() = speed / 60 / 60 * (updateInterval / 20).toDouble()
 
-    private var increaseX: Int = 0
-    private var increaseZ: Int = 0
+    open protected var increaseX: Int = 0
+    open protected var increaseZ: Int = 0
 
 
     override val onBoard: List<Player>
         get() = world.players.filter { isOnBoard(it) }
 
     override var speed: Double = 0.0 // in metres per second
-        private set(value) {
+        protected set(value) {
             field = value // important we set this first
             var angle = 360 - heading.toDouble() + 90
             if(angle > 360) angle -= 360
@@ -123,7 +123,7 @@ class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : 
             increaseZ = round(0.0 - (distancePerUpdate * sin(radians))).toInt()
         }
 
-    private val onBoardEntities: Collection<Entity>
+    open protected val onBoardEntities: Collection<Entity>
         get() {
             val widthX = (boundingBox.maxX - boundingBox.minX)
             val widthY = (boundingBox.maxY - boundingBox.minY)
@@ -209,7 +209,7 @@ class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : 
         }
     var currentlyFacing: Int = -1
 
-    private val listener = object : Listener {
+    open protected val listener = object : Listener {
         @EventHandler(ignoreCancelled = true, priority = HIGHEST)
         fun onPlayerInteract(e: PlayerInteractEvent) {
             if(e.clickedBlock != null) {
@@ -264,7 +264,7 @@ class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : 
         return true
     }
 
-    init {
+    open protected fun init() {
         try {
             // Detect vessel
             try {
@@ -642,5 +642,13 @@ class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : 
         sails.forEach { it.close() }
         rudder.close()
         Bukkit.getScheduler().cancelTask(updateTaskId)
+    }
+
+    companion object {
+        fun detect(logger: Logger, detectionLoc: Location): SimpleSailingVessel {
+            val ship = SimpleSailingVessel(logger, detectionLoc)
+            ship.init()
+            return ship
+        }
     }
 }

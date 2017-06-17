@@ -93,6 +93,8 @@ class WacCore : JavaPlugin() {
         //CommandModule.init(this, logger)
         SailingModule.init()
         TemporaryModule.init(this)
+
+        Class2()
     }
 
     override fun onDisable() {
