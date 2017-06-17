@@ -68,9 +68,6 @@ import java.util.logging.Logger
 
 /*
 TODO:
-    Cannons integration
-
-
     Fix: Ship filling up with water if under water line.
  */
 class SimpleSailingVessel(private val logger: Logger, detectionLoc: Location) : Ship, HasSail, HasRudder, AutoCloseable {
