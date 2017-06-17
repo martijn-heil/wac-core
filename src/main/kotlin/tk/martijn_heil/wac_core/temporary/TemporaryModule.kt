@@ -20,7 +20,11 @@ package tk.martijn_heil.wac_core.temporary
 
 import org.bukkit.ChatColor
 import org.bukkit.Server
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.plugin.Plugin
 import java.lang.Math.pow
 import java.lang.Math.sqrt
@@ -61,8 +65,19 @@ object TemporaryModule {
                 }
             }
         }, 0, 20)
+        server.pluginManager.registerEvents(TemporaryModuleListener, plugin)
     }
 
     fun distance(firstLoc: Pair<Int, Int>, secondLoc: Pair<Int, Int>) = sqrt(pow(firstLoc.first.toDouble() -
             secondLoc.first.toDouble(), 2.0) + pow(firstLoc.second.toDouble() + secondLoc.second.toDouble(), 2.0))
+
+    private object TemporaryModuleListener : Listener {
+        @EventHandler(ignoreCancelled = true)
+        fun onMobSpawn(e: EntitySpawnEvent) {
+            val loc = e.entity.location
+            if(e.entity is Monster && distance(centerLoc, Pair(loc.x.toInt(), loc.z.toInt())) <= radius) {
+                e.isCancelled = true
+            }
+        }
+    }
 }
