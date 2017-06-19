@@ -71,7 +71,7 @@ class CraftMassBlockUpdate(private val plugin: Plugin, private val world: World)
         val res = setBlockFast(world, x, y, z, blockId, data.toByte())
 
         if (relightingStrategy != MassBlockUpdate.RelightingStrategy.NEVER) {
-            if (getBlockLightBlocking(oldBlockId) !== getBlockLightBlocking(blockId) || getBlockLightEmission(oldBlockId) !==getBlockLightEmission(blockId)) {
+            if (getBlockLightBlocking(oldBlockId) != getBlockLightBlocking(blockId) || getBlockLightEmission(oldBlockId) != getBlockLightEmission(blockId)) {
                 // lighting or light blocking by this block has changed; force a recalculation
                 if (relightingStrategy == MassBlockUpdate.RelightingStrategy.IMMEDIATE) {
                     recalculateBlockLighting(world, x, y, z)
