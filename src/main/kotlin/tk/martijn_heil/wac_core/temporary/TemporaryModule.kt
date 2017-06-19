@@ -19,6 +19,7 @@
 package tk.martijn_heil.wac_core.temporary
 
 import org.bukkit.ChatColor
+import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
@@ -26,17 +27,16 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.plugin.Plugin
-import java.lang.Math.pow
-import java.lang.Math.sqrt
+import tk.martijn_heil.wac_core.getDefaultWorld
 import java.util.*
 
 
 object TemporaryModule {
     lateinit private var plugin: Plugin
     lateinit private var server: Server
-    private val centerLoc = Pair(8500, 4500)
-    private val radius = 5000
-    private val playersInZone = HashMap<Player, Boolean>()
+    private val centerLoc = Location(getDefaultWorld(), 8500.0, 1.0, 4500.0)
+    private val radius = 2500
+    private val playersInZone = ArrayList<Player>()
     private val TIME_NIGHT: Long = 18000
 
     fun init(plugin: Plugin) {
@@ -46,21 +46,16 @@ object TemporaryModule {
         server.scheduler.scheduleSyncRepeatingTask(plugin, {
             server.onlinePlayers.forEach {
                 val loc = it.location
-                if(distance(centerLoc, Pair(loc.x.toInt(), loc.z.toInt())) <= radius) {
+                loc.y = 1.0
+                if(centerLoc.distance(loc) <= radius) {
                     if(!playersInZone.contains(it)) { // The player entered the zone.
-                        if(it.playerTime == it.world.time) { // The player doesn't have a custom player time.
-                            playersInZone.put(it, true)
-                            it.setPlayerTime(TIME_NIGHT, false)
-                        } else {
-                            playersInZone.put(it, false)
-                        }
+                        playersInZone.add(it)
+                        it.setPlayerTime(TIME_NIGHT, false)
                         it.sendMessage(ChatColor.RED.toString() + "Je gaat nu de geïnfecteerde zone binnen..")
                     }
                 } else if(playersInZone.contains(it)) { // The player left the zone.
-                    val resetPlayerTime = playersInZone.remove(it)
-                    if(resetPlayerTime != null && resetPlayerTime) {
-                        it.resetPlayerTime()
-                    }
+                    playersInZone.remove(it)
+                    it.resetPlayerTime()
                     it.sendMessage(ChatColor.GREEN.toString() + "Je verlaat nu de geïnfecteerde zone.")
                 }
             }
@@ -68,14 +63,12 @@ object TemporaryModule {
         server.pluginManager.registerEvents(TemporaryModuleListener, plugin)
     }
 
-    fun distance(firstLoc: Pair<Int, Int>, secondLoc: Pair<Int, Int>) = sqrt(pow(firstLoc.first.toDouble() -
-            secondLoc.first.toDouble(), 2.0) + pow(firstLoc.second.toDouble() + secondLoc.second.toDouble(), 2.0))
-
     private object TemporaryModuleListener : Listener {
         @EventHandler(ignoreCancelled = true)
         fun onMobSpawn(e: EntitySpawnEvent) {
             val loc = e.entity.location
-            if(e.entity is Monster && distance(centerLoc, Pair(loc.x.toInt(), loc.z.toInt())) <= radius) {
+            loc.y = 1.0
+            if(e.entity is Monster && centerLoc.distance(loc) <= radius) {
                 e.isCancelled = true
             }
         }

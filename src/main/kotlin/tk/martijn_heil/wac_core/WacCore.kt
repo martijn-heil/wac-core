@@ -23,7 +23,6 @@ import com.comphenix.protocol.ProtocolManager
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
 import tk.martijn_heil.wac_core.craft.SailingModule
 import tk.martijn_heil.wac_core.gamemodeswitching.GameModeSwitchingModule
 import tk.martijn_heil.wac_core.gameplay.GamePlayControlModule
@@ -85,16 +84,14 @@ class WacCore : JavaPlugin() {
         logger.info("Setting up ProtocolLib things..")
         protocolManager = ProtocolLibrary.getProtocolManager()
 
-        KingdomModule.init(this, logger)
-        AutoSneakModule.init(protocolManager, this, logger)
-        GameModeSwitchingModule.init(this, logger)
-        GeneralModule.init(this, logger)
-        GamePlayControlModule.init(this, logger)
+        KingdomModule.init(this, PrefixedLogger("KingdomModuleLogger", "KingdomModule", logger))
+        //AutoSneakModule.init(protocolManager, this, PrefixedLogger("AutoSneakModuleLogger", "AutoSneakModule", logger))
+        GameModeSwitchingModule.init(this, PrefixedLogger("GameModeSwitchingModuleLogger", "GameModeSwitchingModule", logger))
+        GeneralModule.init(this, PrefixedLogger("GeneralModuleLogger", "GeneralModule", logger))
+        GamePlayControlModule.init(this, PrefixedLogger("GamePlayControlModuleLogger", "GamePlayControlModule", logger))
         //CommandModule.init(this, logger)
-        SailingModule.init()
+        SailingModule.init(this, PrefixedLogger("SailingModuleLogger", "SailingModule", logger))
         TemporaryModule.init(this)
-
-        Class2()
     }
 
     override fun onDisable() {

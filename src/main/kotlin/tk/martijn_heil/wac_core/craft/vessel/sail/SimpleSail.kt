@@ -37,13 +37,13 @@ import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.util.detect
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
+import java.io.Closeable
 import java.util.*
 
 
-class SimpleSail(private var sign: Sign) : Sail, AutoCloseable {
+class SimpleSail(private var sign: Sign) : Sail, AutoCloseable, Closeable {
 
     private var world: World = sign.world
-    var isUpdatingLocation = false
 
     private val listener = object : Listener {
         @EventHandler(ignoreCancelled = true, priority = HIGHEST)
@@ -63,12 +63,10 @@ class SimpleSail(private var sign: Sign) : Sail, AutoCloseable {
 
         @EventHandler(ignoreCancelled = true)
         fun onBlockBreak(e: BlockBreakEvent) {
-            if(!isUpdatingLocation) {
-                val signData = (sign.data as org.bukkit.material.Sign)
+            val signData = (sign.data as org.bukkit.material.Sign)
 
-                if(e.block == sign.block || e.block == sign.block.getRelative(signData.attachedFace)) {
-                    e.isCancelled = true
-                }
+            if (e.block == sign.block || e.block == sign.block.getRelative(signData.attachedFace)) {
+                e.isCancelled = true
             }
         }
     }

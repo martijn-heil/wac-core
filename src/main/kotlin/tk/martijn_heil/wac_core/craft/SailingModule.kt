@@ -23,40 +23,41 @@ import at.pavlov.cannons.Cannons
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Server
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority.MONITOR
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
-import tk.martijn_heil.wac_core.WacCore
+import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.craft.vessel.sail.SimpleSailingVessel
 import java.util.*
-import java.util.logging.LogRecord
 import java.util.logging.Logger
 
 
 object SailingModule : AutoCloseable {
+    lateinit private var logger: Logger
+    lateinit private var plugin: Plugin
+    private val server: Server by lazy { plugin.server }
     private val random = Random()
     private val ships: MutableCollection<SimpleSailingVessel> = ArrayList()
-    lateinit var cannonsAPI: CannonsAPI
+    val cannonsAPI: CannonsAPI by lazy { (Bukkit.getPluginManager().getPlugin("Cannons") as Cannons).cannonsAPI }
 
     var windFrom: Int = 0 // Wind coming from x degrees
         private set
 
-    fun init() {
-        cannonsAPI = (Bukkit.getPluginManager().getPlugin("Cannons") as Cannons).cannonsAPI
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(WacCore.plugin, {
+    fun init(plugin: Plugin, logger: Logger) {
+        this.plugin = plugin
+        this.logger = logger
+        server.scheduler.scheduleSyncRepeatingTask(plugin, {
             windFrom = random.nextInt(360)
         }, 0, 72000) // Every hour
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(WacCore.plugin, {
+        server.scheduler.scheduleSyncRepeatingTask(plugin, {
             Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "[Wind] " + ChatColor.GRAY + "The wind now blows from $windFrom°.")
         }, 0, 6000) // Every five minutes
 
-        Bukkit.getPluginManager().registerEvents(SailingModuleListener, WacCore.plugin)
-        //Bukkit.getPluginManager().registerEvents(TeleportFix(WacCore.plugin), WacCore.plugin)
-        //Bukkit.getPluginManager().registerEvents(TeleportFix2(WacCore.plugin), WacCore.plugin)
+        server.pluginManager.registerEvents(SailingModuleListener, plugin)
     }
 
     override fun close() {
@@ -71,7 +72,7 @@ object SailingModule : AutoCloseable {
                             e.clickedBlock.type == Material.SIGN_POST ||
                             e.clickedBlock.type == Material.WALL_SIGN) && (e.clickedBlock.state as Sign).lines[0] == "[Ship]") {
                 try {
-                    ships.add(SimpleSailingVessel.detect(WacCore.logger, e.clickedBlock.location))
+                    ships.add(SimpleSailingVessel.detect(plugin, logger, e.clickedBlock.location))
                 } catch(ex: IllegalStateException) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                 } catch(ex: Exception) {
@@ -82,12 +83,38 @@ object SailingModule : AutoCloseable {
         }
     }
 
-    private object SailingModuleLogger : Logger("SailingModuleLogger", null) {
-        private val target = WacCore.logger
-        override fun log(record: LogRecord?) {
-            if(record != null) {
-                record.message = " [SailingModule] " + record.message
-                target.log(record)
+    private object CraftManager {
+        val crafts: Collection<Craft> = ArrayList()
+        fun init() {
+            server.pluginManager.registerEvents(CraftManagerListener, plugin)
+        }
+
+        private object CraftManagerListener : Listener {
+            @EventHandler(ignoreCancelled = true, priority = MONITOR)
+            fun onPlayerInteract(e: PlayerInteractEvent) {
+                if (e.clickedBlock != null &&
+                        (e.clickedBlock.type == Material.SIGN ||
+                                e.clickedBlock.type == Material.SIGN_POST ||
+                                e.clickedBlock.type == Material.WALL_SIGN) && (e.clickedBlock.state as Sign).lines[0] == "[Craft]") {
+                    val type = (e.clickedBlock.state as Sign).lines[1]
+                    if (type == "") {
+                        e.player.sendMessage(ChatColor.RED.toString() + "Error: Craft type not specified."); return
+                    }
+
+
+                    when (type) {
+                        "SailingVessel" -> {
+                            try {
+                                ships.add(SimpleSailingVessel.detect(plugin, logger, e.clickedBlock.location))
+                            } catch(ex: IllegalStateException) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
+                            } catch(ex: Exception) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "An internal server error occurred." + ex.message)
+                                ex.printStackTrace()
+                            }
+                        }
+                    }
+                }
             }
         }
     }

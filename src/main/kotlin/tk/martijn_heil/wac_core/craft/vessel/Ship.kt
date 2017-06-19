@@ -19,9 +19,9 @@
 package tk.martijn_heil.wac_core.craft.vessel
 
 import tk.martijn_heil.wac_core.craft.Craft
-import tk.martijn_heil.wac_core.craft.Moveable
+import tk.martijn_heil.wac_core.craft.MoveableCraft
 
 
-interface Ship : Craft, HasRudder, Moveable {
+interface Ship : Craft, HasRudder, MoveableCraft {
 
 }

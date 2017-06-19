@@ -2,6 +2,7 @@ package tk.martijn_heil.wac_core.craft.util.nms
 
 import net.minecraft.server.v1_11_R1.BlockPosition
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.BlockFace
 import org.bukkit.block.BlockState
@@ -49,10 +50,8 @@ class CraftMassBlockUpdate(private val plugin: Plugin, private val world: World)
         return true
     }
 
-
-    override fun setBlock(x: Int, y: Int, z: Int, blockId: Int): Boolean {
-        return setBlock(x, y, z, blockId, 0)
-    }
+    override fun setBlock(x: Int, y: Int, z: Int, material: Material) = setBlock(x, y, z, material.id)
+    override fun setBlock(x: Int, y: Int, z: Int, blockId: Int) = setBlock(x, y, z, blockId, 0)
 
     override fun setBlock(x: Int, y: Int, z: Int, blockId: Int, data: Int): Boolean {
 //        val b = world.getBlockAt(x, y, z)

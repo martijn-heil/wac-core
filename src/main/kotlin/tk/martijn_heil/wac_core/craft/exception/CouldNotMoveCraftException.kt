@@ -16,14 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tk.martijn_heil.wac_core.craft
-
-import org.bukkit.entity.Player
+package tk.martijn_heil.wac_core.craft.exception
 
 
-interface Moveable {
-    val speed: Double // Speed in metres per hour
-    val heading: Int // Heading in degrees
-
-    val onBoard: List<Player> // TODO better offline player
+class CouldNotMoveCraftException : Exception {
+    constructor(message: String, cause: Throwable, enableSuppression: Boolean, writeableStackTrace: Boolean) : super(message, cause, enableSuppression, writeableStackTrace)
+    constructor(message: String) : super(message)
+    constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(cause: Throwable) : super(cause)
 }

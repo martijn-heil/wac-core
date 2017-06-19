@@ -35,14 +35,14 @@ import org.bukkit.event.player.PlayerInteractEvent
 import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
+import java.io.Closeable
 
 /*
     [Rudder]
        0
  */
-class SimpleRudder(private var sign: Sign) : AutoCloseable {
+class SimpleRudder(private var sign: Sign) : AutoCloseable, Closeable {
     private var world = sign.world
-    var isUpdatingLocation = false
 
     private val listener = object : Listener {
         @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -57,27 +57,29 @@ class SimpleRudder(private var sign: Sign) : AutoCloseable {
 
         @EventHandler(ignoreCancelled = true, priority = MONITOR)
         fun onPlayerInteract(e: PlayerInteractEvent) {
-            if (e.clickedBlock == sign.block) {
-                if (e.action == Action.LEFT_CLICK_BLOCK) {
-                    var newCourse = course - 10
-                    if (newCourse < 0) newCourse += 360
-                    course = newCourse
-                } else if (e.action == Action.RIGHT_CLICK_BLOCK) {
-                    var newCourse = course + 10
-                    if (newCourse >= 360) newCourse = 0 + (newCourse - 360)
-                    course = newCourse
+            try {
+                if (e.clickedBlock == sign.block) {
+                    if (e.action == Action.LEFT_CLICK_BLOCK) {
+                        var newCourse = course - 10
+                        if (newCourse < 0) newCourse += 360
+                        course = newCourse
+                    } else if (e.action == Action.RIGHT_CLICK_BLOCK) {
+                        var newCourse = course + 10
+                        if (newCourse >= 360) newCourse = 0 + (newCourse - 360)
+                        course = newCourse
+                    }
                 }
+            } catch(t: Throwable) {
+                t.printStackTrace()
             }
         }
 
         @EventHandler(ignoreCancelled = true)
         fun onBlockBreak(e: BlockBreakEvent) {
-            if(!isUpdatingLocation) {
-                val signData = (sign.data as org.bukkit.material.Sign)
+            val signData = (sign.data as org.bukkit.material.Sign)
 
-                if(e.block == sign.block || e.block == sign.block.getRelative(signData.attachedFace)) {
-                    e.isCancelled = true
-                }
+            if (e.block == sign.block || e.block == sign.block.getRelative(signData.attachedFace)) {
+                e.isCancelled = true
             }
         }
     }

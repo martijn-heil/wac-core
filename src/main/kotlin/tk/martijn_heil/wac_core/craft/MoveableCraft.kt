@@ -19,8 +19,11 @@
 package tk.martijn_heil.wac_core.craft
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 
 
-interface Craft {
-    val location: Location
+interface MoveableCraft : Craft {
+    override var location: Location
+    fun rotate(rotation: Rotation)
+    val onBoardEntities: Collection<Entity> // TODO better offline player
 }

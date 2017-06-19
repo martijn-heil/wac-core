@@ -22,6 +22,7 @@ description = "Well"
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -93,4 +94,14 @@ processResources {
 sourceSets {
     main.kotlin.srcDirs += 'src/main/kotlin'
     main.java.srcDirs += 'src/main/java'
+}
+
+idea{
+    project {
+        languageLevel = '1.8'
+    }
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
 }

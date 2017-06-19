@@ -16,11 +16,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package tk.martijn_heil.wac_core.craft
+package tk.martijn_heil.wac_core
 
-import org.bukkit.Location
+import java.util.logging.LogRecord
+import java.util.logging.Logger
 
 
-interface Craft {
-    val location: Location
+class PrefixedLogger(name: String, private val prefix: String, private val target: Logger) : Logger(name, null) {
+    override fun log(record: LogRecord?) {
+        if(record != null) {
+            record.message = "[" + prefix + "] " + record.message
+            target.log(record)
+        }
+    }
 }

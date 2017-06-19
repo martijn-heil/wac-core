@@ -18,6 +18,7 @@
 
 package tk.martijn_heil.wac_core.craft.util
 
+import org.bukkit.Material
 import org.bukkit.block.BlockState
 import java.util.concurrent.TimeUnit
 
@@ -55,6 +56,8 @@ interface MassBlockUpdate {
          */
         HYBRID
     }
+
+    fun setBlock(x: Int, y: Int, z: Int, material: Material): Boolean
 
     /**
      * Make a fast block change at the given coordinates.  Clients will
