@@ -40,8 +40,7 @@ import org.bukkit.material.Door
 import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.Rotation
-import tk.martijn_heil.wac_core.craft.Rotation.ANTICLOCKWISE
-import tk.martijn_heil.wac_core.craft.Rotation.CLOCKWISE
+import tk.martijn_heil.wac_core.craft.Rotation.*
 import tk.martijn_heil.wac_core.craft.SailingModule.windFrom
 import tk.martijn_heil.wac_core.craft.exception.CouldNotMoveCraftException
 import tk.martijn_heil.wac_core.craft.util.detect
