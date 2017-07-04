@@ -26,7 +26,7 @@ interface MassBlockUpdate {
     enum class RelightingStrategy {
         /**
          * Do not do any relighting calculations at all.  If any block
-         * lighting properties (i.e. light emission or light blocking)
+         * lighting properties (i.chunkPropagateSkylightOcclusion. light emission or light blocking)
          * change, this may result in incorrect lighting of the changed
          * blocks.  This strategy should be used if you are certain
          * that no lighting properties are being changed, or if your

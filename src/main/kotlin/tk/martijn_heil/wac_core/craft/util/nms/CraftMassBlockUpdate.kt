@@ -1,5 +1,6 @@
 package tk.martijn_heil.wac_core.craft.util.nms
 
+import net.minecraft.server.v1_11_R1.Block
 import net.minecraft.server.v1_11_R1.BlockPosition
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -8,6 +9,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.BlockState
 import org.bukkit.block.Sign
 import org.bukkit.craftbukkit.v1_11_R1.CraftWorld
+import org.bukkit.material.Button
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import tk.martijn_heil.wac_core.craft.util.MassBlockUpdate
@@ -28,6 +30,12 @@ class CraftMassBlockUpdate(private val plugin: Plugin, private val world: World)
     private var blocksModified = 0
 
     override fun setBlockState(x: Int, y: Int, z: Int, state: BlockState): Boolean {
+        val stateData = state.data
+        if(stateData is Button) {
+            stateData.isPowered = false
+            state.data = stateData
+        }
+
         val res = setBlock(x, y, z, state.typeId, state.rawData.toInt())
         if(!res) return false
         val newBlock = world.getBlockAt(x, y, z)
@@ -197,20 +205,10 @@ class CraftMassBlockUpdate(private val plugin: Plugin, private val world: World)
         }
     }
 
-    private inner class DeferredBlock(val x: Int, val y: Int, val z: Int)
+    private data class DeferredBlock(val x: Int, val y: Int, val z: Int)
 
     companion object {
-
         private val MAX_BLOCKS_PER_TIME_CHECK = 1000
-
-        /**
-         * @param world
-         * *
-         * @return
-         */
-        fun createMassBlockUpdater(plugin: Plugin, world: org.bukkit.World): MassBlockUpdate {
-            return CraftMassBlockUpdate(plugin, world)
-        }
     }
 }
 
@@ -219,7 +217,7 @@ private fun setBlockFast(world: World, x: Int, y: Int, z: Int, blockId: Int, dat
     val bp = BlockPosition(x, y, z)
     val combined = (data.toInt() shl 12) or blockId
     val ibd = net.minecraft.server.v1_11_R1.Block.getByCombinedId(combined)
-    return w.setTypeAndData(bp, ibd, 0x02) // World#setBlockState/setTypeAndData(BlockPos, IBlockState/IBlockData, flag)
+    return w.setTypeAndData(bp, ibd, 0x02) // World#setBlockState/setTypeAndData(BlockPos, IBlockState/IBlockData, flags)
 }
 
 private fun getBlockLightBlocking(blockId: Int): Int {
@@ -234,6 +232,7 @@ private fun getBlockLightEmission(blockId: Int): Int {
     throw UnsupportedOperationException()
 }
 
+// TODO: Fix commented out code
 //private fun getBlockLightBlocking(blockId: Int): Int {
 //    return Block.getById(blockId).()
 //}
@@ -245,55 +244,59 @@ private fun getBlockLightEmission(blockId: Int): Int {
 //    val i = x and 0x0F
 //    val j = y and 0xFF
 //    val k = z and 0x0F
+//    val blockPos = BlockPosition(i, j, k)
 //    val craftChunk = world.getChunkAt(x shr 4, z shr 4) as CraftChunk
 //    val nmsChunk = craftChunk.handle
 //
 //    val i1 = k shl 4 or i
 //    val maxY = nmsChunk.heightMap[i1]
 //
-//    val block: Block = nmsChunk.a(i, j, k).block
+//    val block: Block = nmsChunk.a(i, j, k).block //
 //    val j2: Int = block
 //
 //    if (j2 > 0) {
 //        if (j >= maxY) {
-//            invokeNmsH(nmsChunk, i, j + 1, k)
+//            chunkRelightBlock(nmsChunk, i, j + 1, k)
 //        }
 //    } else if (j == maxY - 1) {
-//        invokeNmsH(nmsChunk, i, j, k)
+//        chunkRelightBlock(nmsChunk, i, j, k)
 //    }
 //
-//    if (nmsChunk.getBrightness(EnumSkyBlock.SKY, i, j, k) > 0 || nmsChunk.getBrightness(EnumSkyBlock.BLOCK, i, j, k) > 0) {
-//        invokeNmsE(nmsChunk, i, k)
+//    if (nmsChunk.getBrightness(EnumSkyBlock.SKY, blockPos) > 0 || nmsChunk.getBrightness(EnumSkyBlock.BLOCK, blockPos) > 0) {
+//        chunkPropagateSkylightOcclusion(nmsChunk, i, k)
 //    }
 //
 //    val w = (world as CraftWorld).handle
-//    w.c(EnumSkyBlock.BLOCK, i, j, k)
+//    w.c(EnumSkyBlock.BLOCK, blockPos) // World#checkLightFor()
 //}
 //
-//private var h: Method? = null
-//private fun invokeNmsH(nmsChunk: Chunk, i: Int, j: Int, k: Int) {
+//// private void relightBlock(int x, int y, int z) (1.11.2, mc-dev)
+//// private void relightBlock(int x, int y, int z) (1.11.2, MCP)
+//private var chunkRelightBlock: Method? = null
+//private fun chunkRelightBlock(nmsChunk: Chunk, i: Int, j: Int, k: Int) {
 //    try {
-//        if (h == null) {
+//        if (chunkRelightBlock == null) {
 //            val classes = arrayOf(Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Int::class.javaPrimitiveType)
-//            h = Chunk::class.java.getDeclaredMethod("h", *classes)
-//            h!!.isAccessible = true
+//            chunkRelightBlock = Chunk::class.java.getDeclaredMethod("relightBlock", *classes)
+//            chunkRelightBlock!!.isAccessible = true
 //        }
-//        h!!.invoke(nmsChunk, i, j, k)
+//        chunkRelightBlock!!.invoke(nmsChunk, i, j, k)
 //    } catch (e: Exception) {
 //        e.printStackTrace()
 //    }
 //
 //}
 //
-//private var e: Method? = null
-//private fun invokeNmsE(nmsChunk: Chunk, i: Int, j: Int) {
+//// private void propagateSkylightOcclusion(int x, int z) (1.11.2, MCP)
+//private var chunkPropagateSkylightOcclusion: Method? = null
+//private fun chunkPropagateSkylightOcclusion(nmsChunk: Chunk, i: Int, j: Int) {
 //    try {
-//        if (e == null) {
+//        if (chunkPropagateSkylightOcclusion == null) {
 //            val classes = arrayOf(Int::class.javaPrimitiveType, Int::class.javaPrimitiveType)
-//            e = Chunk::class.java.getDeclaredMethod("e", *classes)
-//            e!!.isAccessible = true
+//            chunkPropagateSkylightOcclusion = Chunk::class.java.getDeclaredMethod("TODO", *classes)
+//            chunkPropagateSkylightOcclusion!!.isAccessible = true
 //        }
-//        e!!.invoke(nmsChunk, i, j)
+//        chunkPropagateSkylightOcclusion!!.invoke(nmsChunk, i, j)
 //    } catch (e: Exception) {
 //        e.printStackTrace()
 //    }

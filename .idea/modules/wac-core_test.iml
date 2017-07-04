@@ -19,7 +19,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output-test url="file://$MODULE_DIR$/../../build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">
@@ -34,6 +34,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../lib/PacketWrapper.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/trireme.0.8.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

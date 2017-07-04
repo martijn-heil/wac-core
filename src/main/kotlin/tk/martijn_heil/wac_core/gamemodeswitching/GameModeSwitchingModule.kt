@@ -53,24 +53,24 @@ object GameModeSwitchingModule {
 //            val p = e.player
 //
 //            if(!e.player.hasPermission(WacCore.Permission.BYPASS__GAMEMODE_SWITCH_PENALTY.toString()) && !isGameModeSwitching(p)) {
-//                if(e.newGameMode == GameMode.CREATIVE) e.isCancelled = true
+//                if(chunkPropagateSkylightOcclusion.newGameMode == GameMode.CREATIVE) chunkPropagateSkylightOcclusion.isCancelled = true
 //                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
 //                    switchingPlayers.add(p.uniqueId)
 //                    Freeze.setFrozen(p, true, true)
-//                    e.player.sendMessage(ChatColor.RED.toString() + "Je bent nu aan het wisselen naar " + e.newGameMode + " mode, dit duurt 30 seconden waarin je kwetsbaar bent.")
+//                    chunkPropagateSkylightOcclusion.player.sendMessage(ChatColor.RED.toString() + "Je bent nu aan het wisselen naar " + chunkPropagateSkylightOcclusion.newGameMode + " mode, dit duurt 30 seconden waarin je kwetsbaar bent.")
 //
 //                    when {
-//                        (e.newGameMode == GameMode.SURVIVAL || e.newGameMode == GameMode.ADVENTURE) -> {
+//                        (chunkPropagateSkylightOcclusion.newGameMode == GameMode.SURVIVAL || chunkPropagateSkylightOcclusion.newGameMode == GameMode.ADVENTURE) -> {
 //                            Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
 //                                switchingPlayers.remove(p.uniqueId)
 //                                Freeze.setFrozen(p, false, true)
 //                            }, 600)
 //                        }
 //
-//                        (e.newGameMode == GameMode.CREATIVE || e.newGameMode == GameMode.SPECTATOR) -> {
+//                        (chunkPropagateSkylightOcclusion.newGameMode == GameMode.CREATIVE || chunkPropagateSkylightOcclusion.newGameMode == GameMode.SPECTATOR) -> {
 //                            Bukkit.getScheduler().scheduleSyncDelayedTask(WacCore.plugin, {
 //                                Freeze.setFrozen(p, false, true)
-//                                e.player.gameMode = e.newGameMode
+//                                chunkPropagateSkylightOcclusion.player.gameMode = chunkPropagateSkylightOcclusion.newGameMode
 //                                switchingPlayers.remove(p.uniqueId)
 //                            }, 600)
 //                        }

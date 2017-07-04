@@ -49,6 +49,7 @@ class SimpleSail(private var sign: Sign) : Sail, AutoCloseable, Closeable {
         @EventHandler(ignoreCancelled = true, priority = HIGHEST)
         fun onEntityExplode(e: EntityExplodeEvent) {
             e.blockList().remove(sign.block)
+            e.blockList().remove(sign.block.getRelative((sign.data as org.bukkit.material.Sign).attachedFace))
         }
 
         @EventHandler(ignoreCancelled = true, priority = HIGHEST)
@@ -88,9 +89,9 @@ class SimpleSail(private var sign: Sign) : Sail, AutoCloseable, Closeable {
 
     init {
         try {
-            blocks = HashSet(detect(Location(sign.location.world, sign.location.x, sign.location.y - 1, sign.location.z ), listOf(Material.WOOL), 200))
+            blocks = HashSet(detect(Location(sign.location.world, sign.location.x, sign.location.y - 1, sign.location.z ), listOf(Material.WOOL), 500))
         } catch(ex: Exception) {
-            throw IllegalStateException(ex)
+            throw IllegalStateException("Could not detect sail (sign at " + sign.location.x + "x " + sign.location.y + " y" + sign.location.z + " z): " + ex.message)
         }
 
         Bukkit.getPluginManager().registerEvents(listener, WacCore.plugin)

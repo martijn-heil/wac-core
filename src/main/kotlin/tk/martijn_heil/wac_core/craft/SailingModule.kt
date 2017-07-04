@@ -30,7 +30,11 @@ import org.bukkit.event.EventPriority.MONITOR
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
+import tk.martijn_heil.wac_core.craft.vessel.sail.Count
 import tk.martijn_heil.wac_core.craft.vessel.sail.SimpleSailingVessel
+import tk.martijn_heil.wac_core.craft.vessel.sail.Trireme
+import tk.martijn_heil.wac_core.craft.vessel.sail.Unireme
+import java.io.Closeable
 import java.util.*
 import java.util.logging.Logger
 
@@ -57,33 +61,14 @@ object SailingModule : AutoCloseable {
             Bukkit.broadcastMessage(ChatColor.AQUA.toString() + "[Wind] " + ChatColor.GRAY + "The wind now blows from $windFrom°.")
         }, 0, 6000) // Every five minutes
 
-        server.pluginManager.registerEvents(SailingModuleListener, plugin)
+        CraftManager.init()
     }
 
     override fun close() {
-        ships.forEach { it.close() }
+        CraftManager.close()
     }
 
-    private object SailingModuleListener : Listener {
-        @EventHandler(ignoreCancelled = true, priority = MONITOR)
-        fun onPlayerInteract(e: PlayerInteractEvent) {
-            if(e.clickedBlock != null &&
-                    (e.clickedBlock.type == Material.SIGN ||
-                            e.clickedBlock.type == Material.SIGN_POST ||
-                            e.clickedBlock.type == Material.WALL_SIGN) && (e.clickedBlock.state as Sign).lines[0] == "[Ship]") {
-                try {
-                    ships.add(SimpleSailingVessel.detect(plugin, logger, e.clickedBlock.location))
-                } catch(ex: IllegalStateException) {
-                    e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
-                } catch(ex: Exception) {
-                    e.player.sendMessage(ChatColor.RED.toString() + "An internal server error occurred." + ex.message)
-                    ex.printStackTrace()
-                }
-            }
-        }
-    }
-
-    private object CraftManager {
+    private object CraftManager : Closeable {
         val crafts: Collection<Craft> = ArrayList()
         fun init() {
             server.pluginManager.registerEvents(CraftManagerListener, plugin)
@@ -103,9 +88,31 @@ object SailingModule : AutoCloseable {
 
 
                     when (type) {
-                        "SailingVessel" -> {
+                        "Trireme" -> {
                             try {
-                                ships.add(SimpleSailingVessel.detect(plugin, logger, e.clickedBlock.location))
+                                ships.add(Trireme.detect(plugin, logger, e.clickedBlock.location))
+                            } catch(ex: IllegalStateException) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
+                            } catch(ex: Exception) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "An internal server error occurred." + ex.message)
+                                ex.printStackTrace()
+                            }
+                        }
+
+                        "Unireme" -> {
+                            try {
+                                ships.add(Unireme.detect(plugin, logger, e.clickedBlock.location))
+                            } catch(ex: IllegalStateException) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
+                            } catch(ex: Exception) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "An internal server error occurred." + ex.message)
+                                ex.printStackTrace()
+                            }
+                        }
+
+                        "Count" -> {
+                            try {
+                                ships.add(Count.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {
@@ -115,6 +122,12 @@ object SailingModule : AutoCloseable {
                         }
                     }
                 }
+            }
+        }
+
+        override fun close() {
+            crafts.forEach {
+                if(it is Closeable) it.close()
             }
         }
     }

@@ -121,12 +121,12 @@ class ItemPropertyListener : Listener {
             (e.whoClicked as Player).updateInventory()
             e.whoClicked.sendMessage(ChatColor.RED.toString() + WacCore.messages.getString("error.event.cancelled.item.drop"));
         }
-        //        else if(ItemStacks.isSoulBound(e.getCursor()) && e.getSlotType() == InventoryType.SlotType.OUTSIDE &&
-        //                e.getClickedInventory() == null)
+        //        else if(ItemStacks.isSoulBound(chunkPropagateSkylightOcclusion.getCursor()) && chunkPropagateSkylightOcclusion.getSlotType() == InventoryType.SlotType.OUTSIDE &&
+        //                chunkPropagateSkylightOcclusion.getClickedInventory() == null)
         //        {
-        //            e.setCancelled(true);
-        //            ((Player) e.getWhoClicked()).updateInventory();
-        //            e.getWhoClicked().setItemOnCursor(e.getCursor());
+        //            chunkPropagateSkylightOcclusion.setCancelled(true);
+        //            ((Player) chunkPropagateSkylightOcclusion.getWhoClicked()).updateInventory();
+        //            chunkPropagateSkylightOcclusion.getWhoClicked().setItemOnCursor(chunkPropagateSkylightOcclusion.getCursor());
         //
         //            np.sendError(TranslationUtils.getStaticMsg(ResourceBundle.getBundle("lang.errorMsgs",
         //                    np.getMinecraftLocale().toLocale()), "eventError.cancelledItemDrop"));
@@ -136,18 +136,18 @@ class ItemPropertyListener : Listener {
         // If player tries to drop item by clicking outside of his inventory while dragging the item..
         // the PlayerDropItemEvent would cancel this aswell, but this keeps the item being dragged,
         // The PlayerDropItemEvent just puts the item back into the inventory, so this is a bit nicer..
-        //        if(ItemStacks.isSoulBound(e.getCursor()) && (e.getSlotType() == InventoryType.SlotType.OUTSIDE))
+        //        if(ItemStacks.isSoulBound(chunkPropagateSkylightOcclusion.getCursor()) && (chunkPropagateSkylightOcclusion.getSlotType() == InventoryType.SlotType.OUTSIDE))
         //        {
-        //            e.setCancelled(true);
-        //            ((Player) e.getWhoClicked()).updateInventory();
-        //            e.getWhoClicked().setItemOnCursor(e.getCursor());
+        //            chunkPropagateSkylightOcclusion.setCancelled(true);
+        //            ((Player) chunkPropagateSkylightOcclusion.getWhoClicked()).updateInventory();
+        //            chunkPropagateSkylightOcclusion.getWhoClicked().setItemOnCursor(chunkPropagateSkylightOcclusion.getCursor());
         //
         //            np.sendError(TranslationUtils.getStaticMsg(ResourceBundle.getBundle("lang.errorMsgs",
         //                    np.getMinecraftLocale().toLocale()), "eventError.cancelledItemDrop"));
         //        }
 
-        //        if(ItemStacks.isSoulBound(e.getCursor()) && e.getSlotType() == InventoryType.SlotType.OUTSIDE &&
-        //                e.getClickedInventory() == null)
+        //        if(ItemStacks.isSoulBound(chunkPropagateSkylightOcclusion.getCursor()) && chunkPropagateSkylightOcclusion.getSlotType() == InventoryType.SlotType.OUTSIDE &&
+        //                chunkPropagateSkylightOcclusion.getClickedInventory() == null)
         //        {
         //
         //        }
@@ -161,14 +161,14 @@ class ItemPropertyListener : Listener {
 
         //        if (ItemStacks.isSoulBound(dragged))
         //        {
-        //            int inventorySize = e.getInventory().getSize(); // The size of the inventory, for reference
+        //            int inventorySize = chunkPropagateSkylightOcclusion.getInventory().getSize(); // The size of the inventory, for reference
         //
         //            // Now we go through all of the slots and check if the slot is inside our inventory (using the inventory size as reference)
-        //            for (int i : e.getRawSlots())
+        //            for (int i : chunkPropagateSkylightOcclusion.getRawSlots())
         //            {
         //                if (i < inventorySize)
         //                {
-        //                    e.setCancelled(true);
+        //                    chunkPropagateSkylightOcclusion.setCancelled(true);
         //
         //                    np.sendError(TranslationUtils.getStaticMsg(ResourceBundle.getBundle("lang.errorMsgs"
         //                            , np.getMinecraftLocale().toLocale()), "eventError.cancelledPutItemInInventory"));
@@ -189,7 +189,7 @@ class ItemPropertyListener : Listener {
 
 
 //    @EventHandler
-//    public void onInventoryClick(InventoryClickEvent e)
+//    public void onInventoryClick(InventoryClickEvent chunkPropagateSkylightOcclusion)
 //    {
 //
 //    }

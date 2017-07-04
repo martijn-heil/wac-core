@@ -130,7 +130,7 @@ class MaxOfItemListener() : Listener {
                     if(result.isEmpty()) { // successfully added maxAmount of this item type to the player's inventory.
 
                         // remove the maxAmount items we just added to the player's inventory from the ground.
-                        // Decrementing the amount directly via e.item.itemStack.amount-- does apperantly not work..
+                        // Decrementing the amount directly via chunkPropagateSkylightOcclusion.item.itemStack.amount-- does apperantly not work..
                         val i2 = e.item.itemStack.clone()
                         i2.amount -= maxAmount
                         e.item.itemStack = i2

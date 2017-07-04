@@ -35,7 +35,7 @@ public class CommonCommands
 
     }
 
-    @Command(aliases = {"help", "?", "h"}, desc = "Show tk.martijn_heil.wac_core.command help", usage = "[tk.martijn_heil.wac_core.command=overview]")
+    @Command(aliases = {"help", "?", "chunkRelightBlock"}, desc = "Show tk.martijn_heil.wac_core.command help", usage = "[tk.martijn_heil.wac_core.command=overview]")
     public void help(@Sender CommandSender sender, @Optional CommandCallable callable)
     {
         if(callable != null)

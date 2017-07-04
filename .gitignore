@@ -62,3 +62,4 @@ src/main/kotlin/tk/martijn_heil/wac_core/sail/
 lib/Cannons.jar
 lib/PacketWrapper.jar
 lib/spigot-1.11.2.jar
+lib/jep-3.6.4.jar

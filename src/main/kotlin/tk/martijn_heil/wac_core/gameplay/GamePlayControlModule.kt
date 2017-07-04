@@ -20,15 +20,21 @@ package tk.martijn_heil.wac_core.gameplay
 
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
+import org.bukkit.Material.SHIELD
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Biome
 import org.bukkit.block.BlockFace
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Horse
+import org.bukkit.entity.HumanEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action.RIGHT_CLICK_AIR
+import org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.vehicle.VehicleEnterEvent
 import org.bukkit.plugin.Plugin
 import java.util.*
@@ -63,18 +69,12 @@ object GamePlayControlModule {
 
         plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
             plugin.server.onlinePlayers.forEach {
-                val biome = it.location.block.biome
-
                 if(!it.isDead) {
                     val timeInLiquid = swimmingState[it.uniqueId] ?: 0
                     fun getMessage(time: Int) = if(time != 1) ChatColor.RED.toString() + "Pas op! Als je over $time seconden nog niet uit het water bent, verdrink je!"
                                                 else ChatColor.RED.toString() + "Pas op! Als je over $time seconde nog niet uit het water bent, verdrink je!"
 
-                    val b = it.location.block
-
-                    if(!(it.gameMode == GameMode.SPECTATOR || it.gameMode == GameMode.CREATIVE) && !it.isInvulnerable &&
-                            (biome == Biome.OCEAN || biome == Biome.DEEP_OCEAN || biome == Biome.FROZEN_OCEAN) &&
-                            b.isLiquid && (b.getRelative(BlockFace.DOWN).isLiquid || b.getRelative(BlockFace.UP).isLiquid)) {
+                    if(isSwimming(it)) {
 
                         if (timeInLiquid >= maxSwimmingDuration) {
                             it.sendMessage(ChatColor.DARK_RED.toString() + "Je bent verdronken!")
@@ -120,38 +120,22 @@ object GamePlayControlModule {
             }
         }
 
-//        @EventHandler(ignoreCancelled = true)
-//        fun onBlockPlace(e: BlockPlaceEvent) {
-//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.DEEP_OCEAN) &&
-//                    !e.block.getRelative(BlockFace.DOWN).isLiquid && e.block.getRelative(BlockFace.UP).isLiquid && e.block.location.y <= e.block.world.seaLevel &&
-//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
-//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str))
-//            {
-//                e.isCancelled = true
-//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blok plaatsen.")
-//            }
-//        }
+        @EventHandler(ignoreCancelled = true)
+        fun onPlayerUseShield(e: PlayerInteractEvent) {
+            val inventory = e.player.inventory
+            if(isSwimming(e.player) && (e.action == RIGHT_CLICK_AIR || e.action == RIGHT_CLICK_BLOCK) &&
+                    inventory.itemInOffHand.type == SHIELD || inventory.itemInMainHand.type == SHIELD) {
+                e.isCancelled = true
+                e.player.sendMessage(ChatColor.RED.toString() + "Je kan je schild niet gebruiken als je aan het zwemmen bent.")
+            }
+        }
+    }
 
-//        @EventHandler(ignoreCancelled = true)
-//        fun onBlockPlace(e: BlockPlaceEvent) {
-//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.FROZEN_OCEAN) &&
-//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
-//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str) &&
-//                    e.block.location.y <= e.block.world.seaLevel) {
-//                e.isCancelled = true
-//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blok plaatsen.")
-//            }
-//        }
-//
-//        @EventHandler(ignoreCancelled = true)
-//        fun onBlockBreak(e: BlockBreakEvent) {
-//            if((e.block.biome == Biome.OCEAN || e.block.biome == Biome.DEEP_OCEAN || e.block.biome == Biome.FROZEN_OCEAN) &&
-//                    (e.player.gameMode == GameMode.SURVIVAL || e.player.gameMode == GameMode.ADVENTURE) &&
-//                    !e.player.hasPermission(WacCore.Permission.BYPASS_OCEAN_BUILD_LIMITS.str) &&
-//                    e.block.location.y < e.block.world.seaLevel) {
-//                e.isCancelled = true
-//                e.player.sendMessage(ChatColor.RED.toString() + "Je kan hier geen blokken slopen.")
-//            }
-//        }
+    private fun isSwimming(it: Entity): Boolean {
+        val b = it.location.block
+        val biome = b.biome
+        return (it is HumanEntity && !(it.gameMode == GameMode.SPECTATOR || it.gameMode == GameMode.CREATIVE) && !it.isInvulnerable &&
+                (biome == Biome.OCEAN || biome == Biome.DEEP_OCEAN || biome == Biome.FROZEN_OCEAN) &&
+                b.isLiquid && (b.getRelative(BlockFace.DOWN).isLiquid || b.getRelative(BlockFace.UP).isLiquid))
     }
 }

@@ -52,7 +52,7 @@ class GeneralListener(val logger: Logger, val plugin: Plugin) : Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerLogin(e: PlayerJoinEvent) {
         logger.fine("Ensuring that " + e.player.name + " is present in database..")
-        //ensurePresenceInDatabase(e.player)
+        //ensurePresenceInDatabase(chunkPropagateSkylightOcclusion.player)
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -89,12 +89,12 @@ class GeneralListener(val logger: Logger, val plugin: Plugin) : Listener {
     }
 
 //    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-//    fun onChunkLoad(e: ChunkLoadEvent) {
-//        if(!clearedChunks.contains(encodeChunkCoords(e.chunk.x, e.chunk.z))) {
-//            logger.info("Clearing chunk.. (x: " + e.chunk.x + ", z: " + e.chunk.z + ")")
-//            clearChunk(e.chunk)
+//    fun onChunkLoad(chunkPropagateSkylightOcclusion: ChunkLoadEvent) {
+//        if(!clearedChunks.contains(encodeChunkCoords(chunkPropagateSkylightOcclusion.chunk.x, chunkPropagateSkylightOcclusion.chunk.z))) {
+//            logger.info("Clearing chunk.. (x: " + chunkPropagateSkylightOcclusion.chunk.x + ", z: " + chunkPropagateSkylightOcclusion.chunk.z + ")")
+//            clearChunk(chunkPropagateSkylightOcclusion.chunk)
 //
-//            val encoded = encodeChunkCoords(e.chunk.x, e.chunk.z)
+//            val encoded = encodeChunkCoords(chunkPropagateSkylightOcclusion.chunk.x, chunkPropagateSkylightOcclusion.chunk.z)
 //            clearedChunks.add(encoded)
 //
 //            @Suppress("DEPRECATION")

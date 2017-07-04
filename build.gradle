@@ -74,6 +74,7 @@ dependencies {
 
     compileOnly fileTree(dir: 'lib', include: '*.jar')
     compile fileTree(dir: 'lib', include: 'PacketWrapper.jar')
+    compile fileTree(dir: 'lib', include: 'trireme.0.8.6.jar')
 
     compileOnly 'net.milkbowl.vault:VaultAPI:1.6'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.2.0'

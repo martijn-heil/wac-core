@@ -48,6 +48,7 @@ class SimpleRudder(private var sign: Sign) : AutoCloseable, Closeable {
         @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
         fun onEntityExplode(e: EntityExplodeEvent) {
             e.blockList().remove(sign.block)
+            e.blockList().remove(sign.block.getRelative((sign.data as org.bukkit.material.Sign).attachedFace))
         }
 
         @EventHandler(ignoreCancelled = true, priority = HIGHEST)

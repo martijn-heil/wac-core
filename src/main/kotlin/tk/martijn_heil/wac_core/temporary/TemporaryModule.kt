@@ -25,7 +25,7 @@ import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.getDefaultWorld
 import java.util.*
@@ -47,7 +47,7 @@ object TemporaryModule {
             server.onlinePlayers.forEach {
                 val loc = it.location
                 loc.y = 1.0
-                if(centerLoc.distance(loc) <= radius) {
+                if(centerLoc.world == loc.world && centerLoc.distance(loc) <= radius) {
                     if(!playersInZone.contains(it)) { // The player entered the zone.
                         playersInZone.add(it)
                         it.setPlayerTime(TIME_NIGHT, false)
@@ -65,11 +65,13 @@ object TemporaryModule {
 
     private object TemporaryModuleListener : Listener {
         @EventHandler(ignoreCancelled = true)
-        fun onMobSpawn(e: EntitySpawnEvent) {
-            val loc = e.entity.location
-            loc.y = 1.0
-            if(e.entity is Monster && centerLoc.distance(loc) <= radius) {
-                e.isCancelled = true
+        fun onMobSpawn(e: CreatureSpawnEvent) {
+            if(e.spawnReason != CreatureSpawnEvent.SpawnReason.CUSTOM) {
+                val loc = e.entity.location
+                loc.y = 1.0
+                if(e.entity is Monster && centerLoc.world == loc.world && centerLoc.distance(loc) <= radius) {
+                    e.isCancelled = true
+                }
             }
         }
     }
