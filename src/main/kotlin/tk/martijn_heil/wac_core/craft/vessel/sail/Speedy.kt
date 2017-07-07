@@ -34,8 +34,10 @@ import java.util.*
 import java.util.logging.Logger
 
 
-class Unireme private constructor(plugin: Plugin, logger: Logger, blocks: Collection<Block>, rotationPoint: Location, sails: Collection<SimpleSail>, rudder: SimpleRudder, rowingSign: Sign, rowingDirectionSign: Sign) : SimpleSailingVessel(plugin, logger, blocks, rotationPoint, sails, rudder, rowingSign, rowingDirectionSign) {
-    override var normalMaxSpeed: Int = 7000
+class Speedy private constructor(plugin: Plugin, logger: Logger, blocks: Collection<Block>, rotationPoint: Location, sails: Collection<SimpleSail>, rudder: SimpleRudder, rowingSign: Sign, rowingDirectionSign: Sign) : SimpleSailingVessel(plugin, logger, blocks, rotationPoint, sails, rudder, rowingSign, rowingDirectionSign) {
+    override var normalMaxSpeed: Int = 20000
+    override var updateInterval: Int = 40
+    override val minWindAngle: Int = 30
 
     private val listener2 = object : Listener {
         @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -63,12 +65,12 @@ class Unireme private constructor(plugin: Plugin, logger: Logger, blocks: Collec
         fun detect(plugin: Plugin, logger: Logger, detectionLoc: Location): SimpleSailingVessel {
             val sails: MutableCollection<SimpleSail> = ArrayList()
             try {
-                val maxSize = 5000
+                val maxSize = 10000
                 val allowedBlocks: Collection<Material> = Material.values().filter { it != Material.AIR && it != Material.WATER && it != Material.STATIONARY_WATER && it != Material.LAVA && it != Material.STATIONARY_LAVA }
                 val blocks: Collection<Block>
                 // Detect vessel
                 try {
-                    logger.info("Detecting unireme at " + detectionLoc.x + "x " + detectionLoc.y + "y " + detectionLoc.z + "z")
+                    logger.info("Detecting count at " + detectionLoc.x + "x " + detectionLoc.y + "y " + detectionLoc.z + "z")
                     blocks = tk.martijn_heil.wac_core.craft.util.detect(detectionLoc, allowedBlocks, maxSize)
                 } catch(e: Exception) {
                     logger.info("Failed to detect sailing vessel: " + (e.message ?: "unknown error"))
@@ -103,9 +105,9 @@ class Unireme private constructor(plugin: Plugin, logger: Logger, blocks: Collec
                 }
                 if (sails.isEmpty()) throw IllegalStateException("No sails found.")
 
-                val unireme = Unireme(plugin, logger, blocks, rotationPoint, sails, rudder, rowingSign, rowingDirectionSign)
-                unireme.init()
-                return unireme
+                val speedy = Speedy(plugin, logger, blocks, rotationPoint, sails, rudder, rowingSign, rowingDirectionSign)
+                speedy.init()
+                return speedy
             } catch(t: Throwable) {
                 sails.forEach { it.isHoisted = true; it.close() }
                 throw t

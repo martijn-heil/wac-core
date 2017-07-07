@@ -86,7 +86,8 @@ class Trireme private constructor(plugin: Plugin, logger: Logger, blocks: Collec
                 val rudder = SimpleRudder(rudderSign)
 
                 val rowingSign = signs.find { it.lines[0] == "[Rowing]" } ?: throw IllegalStateException("No rowing sign found.")
-                if(rowingSign.lines[1] == "") rowingSign.setLine(1, "false")
+                rowingSign.setLine(1, "false")
+                rowingSign.update(true, false)
                 logger.info("Found rowing sign at " + rowingSign.x + " " + rowingSign.y + " " + rudderSign.z)
 
                 val rowingDirectionSign = signs.find { it.lines[0] == "[RowingDirection]" } ?: throw IllegalStateException("No rowing direction sign found.")
@@ -96,7 +97,7 @@ class Trireme private constructor(plugin: Plugin, logger: Logger, blocks: Collec
                 // Detect sails
                 signs.filter { it.lines[0] == "[Sail]" }.forEach {
                     logger.fine("Found sail sign at " + it.x + " " + it.y + " " + it.z)
-                    sails.add(SimpleSail(it))
+                    sails.add(SimpleSail(plugin, it))
                 }
                 if (sails.isEmpty()) throw IllegalStateException("No sails found.")
 

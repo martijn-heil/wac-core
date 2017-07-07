@@ -58,3 +58,11 @@ fun getRotatedLocation(rotationPoint: Location, rotation: Rotation, loc: Locatio
     val newRelativeZ = if(rotation == CLOCKWISE) -(rotationPoint.x - loc.x) else rotationPoint.x - loc.x
     return Location(loc.world, rotationPoint.x + newRelativeX, loc.y, rotationPoint.z + newRelativeZ)
 }
+
+fun getRotatedLocation(output: Location, rotationPoint: Location, rotation: Rotation, loc: Location) {
+    val newRelativeX = if (rotation == CLOCKWISE) rotationPoint.z - loc.z else -(rotationPoint.z - loc.z)
+    val newRelativeZ = if(rotation == CLOCKWISE) -(rotationPoint.x - loc.x) else rotationPoint.x - loc.x
+    output.x += newRelativeX
+    output.y += loc.y
+    output.z += newRelativeZ
+}

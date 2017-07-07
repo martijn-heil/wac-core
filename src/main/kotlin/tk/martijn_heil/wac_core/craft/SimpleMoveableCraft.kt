@@ -27,6 +27,13 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.BlockState
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority.HIGHEST
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPhysicsEvent
+import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.material.Attachable
 import org.bukkit.material.Directional
@@ -35,17 +42,19 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.exception.CouldNotMoveCraftException
+import tk.martijn_heil.wac_core.craft.util.BlockProtector
 import tk.martijn_heil.wac_core.craft.util.BoundingBox
 import tk.martijn_heil.wac_core.craft.util.MassBlockUpdate
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
 import tk.martijn_heil.wac_core.craft.util.nms.CraftMassBlockUpdate
+import java.io.Closeable
 import java.util.*
 
 
-abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : MoveableCraft {
+abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : MoveableCraft, Closeable {
 
     var boundingBox: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-
+    protected val blockProtector = BlockProtector(plugin)
     protected var rotationPoint: Location = rotationPoint.clone()
     override var location: Location = rotationPoint
         set(value) {
@@ -89,6 +98,7 @@ abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collectio
             if (it.z > boundingBox.maxZ) boundingBox.maxZ = it.z.toDouble()
         }
     }
+
 
     open fun containsBlock(block: Block) = boundingBox.contains(block) && blocks.contains(block)
     open fun addBlock(block: Block) = blocks.add(block)
@@ -225,6 +235,8 @@ abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collectio
             if (!containsBlock(s.block)) massBlockUpdate.setBlock(s.x, s.y, s.z, AIR)
         }
 
+        blockProtector.updateAllLocationsRotated(rotation, rotationPoint)
+
         massBlockUpdate.notifyClients()
     }
 
@@ -304,6 +316,12 @@ abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collectio
             if (!containsBlock(s.block)) massBlockUpdate.setBlock(s.x, s.y, s.z, AIR)
         }
 
+        blockProtector.updateAllLocations(world, relativeX, relativeY, relativeZ)
+
         massBlockUpdate.notifyClients()
+    }
+
+    override fun close() {
+        blockProtector.close()
     }
 }

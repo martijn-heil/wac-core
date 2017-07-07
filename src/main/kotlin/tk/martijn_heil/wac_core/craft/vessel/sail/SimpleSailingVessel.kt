@@ -38,6 +38,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.material.Bed
 import org.bukkit.material.Door
 import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.WacCore
@@ -64,7 +65,7 @@ TODO:
     Fix: Ship filling up with water if under water line.
  */
 open class SimpleSailingVessel protected constructor(protected val plugin: Plugin, protected val logger: Logger, blocks: Collection<Block>, rotationPoint: Location,
-                                                     override val sails: Collection<SimpleSail>, protected val rudder: SimpleRudder, protected var rowingSign: Sign, protected var rowingDirectionSign: Sign) : SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, AutoCloseable {
+                                                     override val sails: Collection<SimpleSail>, protected val rudder: SimpleRudder, protected var rowingSign: Sign, protected var rowingDirectionSign: Sign) : SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, Closeable {
     open protected var rowingSpeed = 1000
     open protected var normalMaxSpeed: Int = 10000                     // in metres per hour
     open protected var speedPerSquareMetreOfSail: Double = 0.0         // in metres per hour
@@ -235,31 +236,14 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
             }
         }
 
-        @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-        fun onEntityExplode(e: EntityExplodeEvent) {
-            e.blockList().remove(rowingSign.block)
-            e.blockList().remove(rowingSign.block.getRelative((rowingSign.data as org.bukkit.material.Sign).attachedFace))
-            e.blockList().remove(rowingDirectionSign.block)
-            e.blockList().remove(rowingDirectionSign.block.getRelative((rowingDirectionSign.data as org.bukkit.material.Sign).attachedFace))
-        }
-
         @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-        fun onEntityExplode2(e: EntityExplodeEvent) {
+        fun onEntityExplode(e: EntityExplodeEvent) {
             e.blockList().forEach { if(boundingBox.contains(it)) removeBlock(it) }
         }
 
         @EventHandler(ignoreCancelled = true, priority = MONITOR)
         fun onBlockBreak(e: BlockBreakEvent) {
             if (boundingBox.contains(e.block)) removeBlock(e.block)
-        }
-
-        @EventHandler(ignoreCancelled = true, priority = HIGHEST)
-        fun onBlockBreak2(e: BlockBreakEvent) {
-            if(e.block == rowingSign.block || e.block == rowingDirectionSign.block ||
-                    e.block == rowingSign.block.getRelative((rowingSign.data as org.bukkit.material.Sign).attachedFace) ||
-                    e.block == rowingDirectionSign.block.getRelative((rowingDirectionSign.data as org.bukkit.material.Sign).attachedFace)) {
-                e.isCancelled = true
-            }
         }
 
         @EventHandler(ignoreCancelled = true)
@@ -277,6 +261,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
                             val blockData = blockState.data
                             addBlock(e.block)
                             if (blockData is Door) addBlock(world.getBlockAt(e.block.x, e.block.y + if (blockData.isTopHalf) -1 else 1, e.block.z))
+                            // TODO beds
                         }
                     }
                 }
@@ -318,6 +303,11 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
             throw Exception("Could not schedule Bukkit task.")
         }
         Bukkit.getPluginManager().registerEvents(listener, WacCore.plugin)
+
+        blockProtector.protectedBlocks.add(rowingSign.location)
+        blockProtector.protectedBlocks.add(rowingSign.block.getRelative((rowingSign.data as org.bukkit.material.Sign).attachedFace).location)
+        blockProtector.protectedBlocks.add(rowingDirectionSign.location)
+        blockProtector.protectedBlocks.add(rowingDirectionSign.block.getRelative((rowingDirectionSign.data as org.bukkit.material.Sign).attachedFace).location)
     }
 
     private fun update() {
@@ -352,7 +342,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
     override fun move(relativeX: Int, relativeY: Int, relativeZ: Int) {
         super.move(relativeX, relativeY, relativeZ)
         rudder.updateLocation(relativeX, relativeZ)
-        sails.forEach { it.updateLocation(relativeX, relativeZ) }
+        sails.forEach { it.updateLocation(relativeX, relativeY, relativeZ) }
         rowingSign = world.getBlockAt(rowingSign.x + relativeX, rowingSign.y + relativeY, rowingSign.z + relativeZ).state as Sign
         rowingDirectionSign = world.getBlockAt(rowingDirectionSign.x + relativeX, rowingDirectionSign.y + relativeY, rowingDirectionSign.z + relativeZ).state as Sign
     }
@@ -366,6 +356,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
     }
 
     override fun close() {
+        super.close()
         HandlerList.unregisterAll(listener)
         sails.forEach { if (it is Closeable) it.close() }
         rudder.close()
@@ -411,7 +402,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
                 // Detect sails
                 signs.filter { it.lines[0] == "[Sail]" }.forEach {
                     logger.fine("Found sail sign at " + it.x + " " + it.y + " " + it.z)
-                    sails.add(SimpleSail(it))
+                    sails.add(SimpleSail(plugin, it))
                 }
                 if (sails.isEmpty()) throw IllegalStateException("No sails found.")
 

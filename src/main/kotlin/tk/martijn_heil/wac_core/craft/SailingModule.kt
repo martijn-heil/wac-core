@@ -30,10 +30,7 @@ import org.bukkit.event.EventPriority.MONITOR
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
-import tk.martijn_heil.wac_core.craft.vessel.sail.Count
-import tk.martijn_heil.wac_core.craft.vessel.sail.SimpleSailingVessel
-import tk.martijn_heil.wac_core.craft.vessel.sail.Trireme
-import tk.martijn_heil.wac_core.craft.vessel.sail.Unireme
+import tk.martijn_heil.wac_core.craft.vessel.sail.*
 import java.io.Closeable
 import java.util.*
 import java.util.logging.Logger
@@ -113,6 +110,17 @@ object SailingModule : AutoCloseable {
                         "Count" -> {
                             try {
                                 ships.add(Count.detect(plugin, logger, e.clickedBlock.location))
+                            } catch(ex: IllegalStateException) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
+                            } catch(ex: Exception) {
+                                e.player.sendMessage(ChatColor.RED.toString() + "An internal server error occurred." + ex.message)
+                                ex.printStackTrace()
+                            }
+                        }
+
+                        "Speedy" -> {
+                            try {
+                                ships.add(Speedy.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {

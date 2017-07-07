@@ -32,7 +32,7 @@ import java.util.logging.Logger
 
 
 class WacCore : JavaPlugin() {
-    val debug = false
+    val debug = true
 
     override fun onEnable() {
         try {

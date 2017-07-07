@@ -25,54 +25,33 @@ import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority.HIGHEST
 import org.bukkit.event.EventPriority.MONITOR
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockPhysicsEvent
-import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import tk.martijn_heil.wac_core.WacCore
+import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.craft.Rotation
+import tk.martijn_heil.wac_core.craft.util.BlockProtector
 import tk.martijn_heil.wac_core.craft.util.detect
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
 import java.io.Closeable
 import java.util.*
 
 
-class SimpleSail(private var sign: Sign) : Sail, AutoCloseable, Closeable {
+class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, AutoCloseable, Closeable {
 
     private var world: World = sign.world
+    private val protectedBlocks = ArrayList<Location>()
+    private val blockProtector = BlockProtector(plugin)
 
     private val listener = object : Listener {
-        @EventHandler(ignoreCancelled = true, priority = HIGHEST)
-        fun onEntityExplode(e: EntityExplodeEvent) {
-            e.blockList().remove(sign.block)
-            e.blockList().remove(sign.block.getRelative((sign.data as org.bukkit.material.Sign).attachedFace))
-        }
-
-        @EventHandler(ignoreCancelled = true, priority = HIGHEST)
-        fun onBlockPhysics(e: BlockPhysicsEvent) {
-            if(e.block == sign.block) e.isCancelled = true
-        }
-
         @EventHandler(ignoreCancelled = true, priority = MONITOR)
         fun onPlayerInteract(e: PlayerInteractEvent) {
             if(e.clickedBlock == sign.block) isHoisted = !isHoisted
         }
-
-        @EventHandler(ignoreCancelled = true)
-        fun onBlockBreak(e: BlockBreakEvent) {
-            val signData = (sign.data as org.bukkit.material.Sign)
-
-            if (e.block == sign.block || e.block == sign.block.getRelative(signData.attachedFace)) {
-                e.isCancelled = true
-            }
-        }
     }
 
-    private var blocks: HashSet<Block>
+    private var blocks: ArrayList<Block>
 
     override var isHoisted: Boolean = true
         set(value) {
@@ -89,31 +68,45 @@ class SimpleSail(private var sign: Sign) : Sail, AutoCloseable, Closeable {
 
     init {
         try {
-            blocks = HashSet(detect(Location(sign.location.world, sign.location.x, sign.location.y - 1, sign.location.z ), listOf(Material.WOOL), 500))
+            blocks = ArrayList(detect(Location(sign.location.world, sign.location.x, sign.location.y - 1, sign.location.z ), listOf(Material.WOOL), 500))
         } catch(ex: Exception) {
             throw IllegalStateException("Could not detect sail (sign at " + sign.location.x + "x " + sign.location.y + " y" + sign.location.z + " z): " + ex.message)
         }
 
-        Bukkit.getPluginManager().registerEvents(listener, WacCore.plugin)
+        Bukkit.getPluginManager().registerEvents(listener, plugin)
+        blockProtector.protectedBlocks.add(sign.block.location)
+        blockProtector.protectedBlocks.add(sign.block.getRelative((sign.data as org.bukkit.material.Sign).attachedFace).location)
+
         isHoisted = false
     }
 
     override val maxSurfaceArea: Int = blocks.size
     override val currentSurfaceArea: Int
-        get() = blocks.filter { it.type == Material.WOOL }.size
+        get() = blocks.size
 
-    fun updateLocation(relativeX: Int, relativeZ: Int) {
-        val tmpBlocks = HashSet<Block>()
-        blocks.forEach { tmpBlocks.add(world.getBlockAt(it.x + relativeX, it.y, it.z + relativeZ)) }
+    fun updateLocation(relativeX: Int, relativeY: Int, relativeZ: Int) {
+        val tmpBlocks = ArrayList<Block>()
+        blocks.forEach { tmpBlocks.add(world.getBlockAt(it.x + relativeX, it.y + relativeY, it.z + relativeZ)) }
         blocks = tmpBlocks
-        sign = world.getBlockAt(sign.x + relativeX, sign.y, sign.z + relativeZ).state as Sign
+        sign = world.getBlockAt(sign.x + relativeX, sign.y + relativeY, sign.z + relativeZ).state as Sign
+        protectedBlocks.forEach {
+            it.x += relativeX
+            it.y += relativeY
+            it.z += relativeZ
+        }
     }
 
     fun updateLocationRotated(rotationPoint: Location, rotation: Rotation) {
-        val tmpBlocks = HashSet<Block>()
+        val tmpBlocks = ArrayList<Block>()
         blocks.forEach { tmpBlocks.add(world.getBlockAt(getRotatedLocation(rotationPoint, rotation, it.location))) }
         blocks = tmpBlocks
         sign = world.getBlockAt(getRotatedLocation(rotationPoint, rotation, sign.location)).state as Sign
+        protectedBlocks.forEach {
+            val newLoc = getRotatedLocation(rotationPoint, rotation, it)
+            it.x = newLoc.x
+            it.y = newLoc.y
+            it.z = newLoc.z
+        }
     }
 
     override fun close() {
