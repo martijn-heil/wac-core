@@ -176,6 +176,8 @@ abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>,
             }
         }
 
+        blockProtector.updateAllLocationsRotated(rotation, rotationPoint)
+
         massBlockUpdate.notifyClients()
     }
 
@@ -258,6 +260,8 @@ abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>,
                 if (s.y < world.seaLevel) massBlockUpdate.setBlock(s.x, s.y, s.z, WATER) else massBlockUpdate.setBlock(s.x, s.y, s.z, AIR)
             }
         }
+
+        blockProtector.updateAllLocations(world, relativeX, relativeY, relativeZ)
 
         massBlockUpdate.notifyClients()
     }
