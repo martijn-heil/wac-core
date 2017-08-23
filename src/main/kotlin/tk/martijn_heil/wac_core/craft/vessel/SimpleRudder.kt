@@ -35,13 +35,12 @@ import org.bukkit.event.player.PlayerInteractEvent
 import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
-import java.io.Closeable
 
 /*
     [Rudder]
        0
  */
-class SimpleRudder(private var sign: Sign) : AutoCloseable, Closeable {
+class SimpleRudder(private var sign: Sign) : AutoCloseable {
     private var world = sign.world
 
     private val listener = object : Listener {

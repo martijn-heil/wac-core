@@ -34,11 +34,10 @@ import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.util.BlockProtector
 import tk.martijn_heil.wac_core.craft.util.detect
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
-import java.io.Closeable
 import java.util.*
 
 
-class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, AutoCloseable, Closeable {
+class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, AutoCloseable {
 
     private var world: World = sign.world
     private val protectedBlocks = ArrayList<Location>()
@@ -101,12 +100,7 @@ class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, Aut
         blocks.forEach { tmpBlocks.add(world.getBlockAt(getRotatedLocation(rotationPoint, rotation, it.location))) }
         blocks = tmpBlocks
         sign = world.getBlockAt(getRotatedLocation(rotationPoint, rotation, sign.location)).state as Sign
-        protectedBlocks.forEach {
-            val newLoc = getRotatedLocation(rotationPoint, rotation, it)
-            it.x = newLoc.x
-            it.y = newLoc.y
-            it.z = newLoc.z
-        }
+        protectedBlocks.forEach { getRotatedLocation(it, rotationPoint, rotation, it) }
     }
 
     override fun close() {

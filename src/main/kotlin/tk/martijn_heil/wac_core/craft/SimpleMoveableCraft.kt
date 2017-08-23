@@ -27,13 +27,6 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.BlockState
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority.HIGHEST
-import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockPhysicsEvent
-import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.material.Attachable
 import org.bukkit.material.Directional
@@ -47,11 +40,10 @@ import tk.martijn_heil.wac_core.craft.util.BoundingBox
 import tk.martijn_heil.wac_core.craft.util.MassBlockUpdate
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
 import tk.martijn_heil.wac_core.craft.util.nms.CraftMassBlockUpdate
-import java.io.Closeable
 import java.util.*
 
 
-abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : MoveableCraft, Closeable {
+abstract class SimpleMoveableCraft(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : MoveableCraft, AutoCloseable {
 
     var boundingBox: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     protected val blockProtector = BlockProtector(plugin)

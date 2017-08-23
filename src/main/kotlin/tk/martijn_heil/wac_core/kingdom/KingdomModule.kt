@@ -61,15 +61,8 @@ object KingdomModule {
 
 
     enum class Kingdom(val displayName: String, val simpleName: String = displayName) {
-        GREECE("Griekenland"),
-        ROME("Rome"),
-        MACEDON("Macedonië", "Macedonie"),
-        GAUL("Gallië", "Gallie"),
-        GERMANIA("Germanië", "Germanie"),
-        BRITANNIA("Britannië", "Britannie"),
-        PERSIA("Perzië", "Perzie"),
-        CARTHAGE("Carthago"),
-        EGYPT("Egypte");
+        IMPERIALS("Imperials"),
+        ROYALS("Royals");
 
         val faction: Faction
             get() {

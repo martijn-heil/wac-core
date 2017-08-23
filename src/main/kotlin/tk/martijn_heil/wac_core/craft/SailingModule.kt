@@ -30,7 +30,10 @@ import org.bukkit.event.EventPriority.MONITOR
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
-import tk.martijn_heil.wac_core.craft.vessel.sail.*
+import tk.martijn_heil.wac_core.craft.vessel.sail.Count
+import tk.martijn_heil.wac_core.craft.vessel.sail.Speedy
+import tk.martijn_heil.wac_core.craft.vessel.sail.Trireme
+import tk.martijn_heil.wac_core.craft.vessel.sail.Unireme
 import java.io.Closeable
 import java.util.*
 import java.util.logging.Logger
@@ -41,7 +44,6 @@ object SailingModule : AutoCloseable {
     lateinit private var plugin: Plugin
     private val server: Server by lazy { plugin.server }
     private val random = Random()
-    private val ships: MutableCollection<SimpleSailingVessel> = ArrayList()
     val cannonsAPI: CannonsAPI by lazy { (Bukkit.getPluginManager().getPlugin("Cannons") as Cannons).cannonsAPI }
 
     var windFrom: Int = 0 // Wind coming from x degrees
@@ -65,8 +67,8 @@ object SailingModule : AutoCloseable {
         CraftManager.close()
     }
 
-    private object CraftManager : Closeable {
-        val crafts: Collection<Craft> = ArrayList()
+    private object CraftManager : AutoCloseable {
+        private val crafts: MutableCollection<Craft> = ArrayList()
         fun init() {
             server.pluginManager.registerEvents(CraftManagerListener, plugin)
         }
@@ -87,7 +89,7 @@ object SailingModule : AutoCloseable {
                     when (type) {
                         "Trireme" -> {
                             try {
-                                ships.add(Trireme.detect(plugin, logger, e.clickedBlock.location))
+                                crafts.add(Trireme.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {
@@ -98,7 +100,7 @@ object SailingModule : AutoCloseable {
 
                         "Unireme" -> {
                             try {
-                                ships.add(Unireme.detect(plugin, logger, e.clickedBlock.location))
+                                crafts.add(Unireme.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {
@@ -109,7 +111,7 @@ object SailingModule : AutoCloseable {
 
                         "Count" -> {
                             try {
-                                ships.add(Count.detect(plugin, logger, e.clickedBlock.location))
+                                crafts.add(Count.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {
@@ -120,7 +122,7 @@ object SailingModule : AutoCloseable {
 
                         "Speedy" -> {
                             try {
-                                ships.add(Speedy.detect(plugin, logger, e.clickedBlock.location))
+                                crafts.add(Speedy.detect(plugin, logger, e.clickedBlock.location))
                             } catch(ex: IllegalStateException) {
                                 e.player.sendMessage(ChatColor.RED.toString() + "Error: " + ex.message)
                             } catch(ex: Exception) {
@@ -135,7 +137,7 @@ object SailingModule : AutoCloseable {
 
         override fun close() {
             crafts.forEach {
-                if(it is Closeable) it.close()
+                if(it is Closeable) it.close() else if (it is AutoCloseable) it.close()
             }
         }
     }

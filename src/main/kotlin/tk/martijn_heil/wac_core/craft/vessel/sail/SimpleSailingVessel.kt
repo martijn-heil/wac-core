@@ -38,7 +38,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityExplodeEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.material.Bed
 import org.bukkit.material.Door
 import org.bukkit.plugin.Plugin
 import tk.martijn_heil.wac_core.WacCore
@@ -55,7 +54,6 @@ import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
 import tk.martijn_heil.wac_core.craft.vessel.HasRudder
 import tk.martijn_heil.wac_core.craft.vessel.SimpleRudder
 import tk.martijn_heil.wac_core.craft.vessel.SimpleShip
-import java.io.Closeable
 import java.lang.Math.*
 import java.util.*
 import java.util.logging.Logger
@@ -65,7 +63,7 @@ TODO:
     Fix: Ship filling up with water if under water line.
  */
 open class SimpleSailingVessel protected constructor(protected val plugin: Plugin, protected val logger: Logger, blocks: Collection<Block>, rotationPoint: Location,
-                                                     override val sails: Collection<SimpleSail>, protected val rudder: SimpleRudder, protected var rowingSign: Sign, protected var rowingDirectionSign: Sign) : SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, Closeable {
+                                                     override val sails: Collection<SimpleSail>, protected val rudder: SimpleRudder, protected var rowingSign: Sign, protected var rowingDirectionSign: Sign) : SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, AutoCloseable {
     open protected var rowingSpeed = 1000
     open protected var normalMaxSpeed: Int = 10000                     // in metres per hour
     open protected var speedPerSquareMetreOfSail: Double = 0.0         // in metres per hour
@@ -358,7 +356,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
     override fun close() {
         super.close()
         HandlerList.unregisterAll(listener)
-        sails.forEach { if (it is Closeable) it.close() }
+        sails.forEach { if (it is AutoCloseable) it.close() }
         rudder.close()
         Bukkit.getScheduler().cancelTask(updateTaskId)
     }
