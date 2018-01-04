@@ -91,6 +91,7 @@ class WacCore : JavaPlugin() {
             CommandModule.init(this, PrefixedLogger("WacCoreCommandModuleLogger", "CommandModule", logger))
             SailingModule.init(this, PrefixedLogger("WacCoreSailingModuleLogger", "SailingModule", logger))
             SprintRestrictionModule.init(this, PrefixedLogger("WacCoreSprintRestrictionModuleLogger", "SprintRestrictionModule", logger))
+            HealthModule.init(this, PrefixedLogger("WacCoreHealthModuleLogger", "HealthModule", logger))
             //TemporaryModule.init(this)
             //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
         } catch(t: Throwable) {
