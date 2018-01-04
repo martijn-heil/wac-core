@@ -62,7 +62,8 @@ object KingdomModule {
 
     enum class Kingdom(val displayName: String, val simpleName: String = displayName) {
         IMPERIALS("Imperials"),
-        ROYALS("Royals");
+        ROYALS("Royals"),
+        SOCIALIST_UNION("Socialist Union");
 
         val faction: Faction
             get() {

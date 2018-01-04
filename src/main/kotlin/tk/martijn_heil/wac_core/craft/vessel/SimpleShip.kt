@@ -19,6 +19,7 @@
 package tk.martijn_heil.wac_core.craft.vessel
 
 import at.pavlov.cannons.cannon.Cannon
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material.*
 import org.bukkit.block.Block
@@ -34,15 +35,22 @@ import org.bukkit.util.Vector
 import tk.martijn_heil.wac_core.WacCore
 import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.SailingModule
-import tk.martijn_heil.wac_core.craft.SimpleMoveableCraft
+import tk.martijn_heil.wac_core.craft.SimpleCraft
 import tk.martijn_heil.wac_core.craft.exception.CouldNotMoveCraftException
+import tk.martijn_heil.wac_core.craft.util.BlockPos
 import tk.martijn_heil.wac_core.craft.util.MassBlockUpdate
+import tk.martijn_heil.wac_core.craft.util.detectAirBlocksBelowSeaLevel
 import tk.martijn_heil.wac_core.craft.util.getRotatedLocation
 import tk.martijn_heil.wac_core.craft.util.nms.CraftMassBlockUpdate
 import java.util.*
 
 
-abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : SimpleMoveableCraft(plugin, blocks, rotationPoint) {
+open class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>, rotationPoint: Location) : SimpleCraft(plugin, blocks, rotationPoint), Ship {
+    override var heading: Int = 0
+
+    open protected var airBlocks: Collection<BlockPos> = detectAirBlocksBelowSeaLevel(rotationPoint.world, boundingBox)
+
+
     override fun rotate(rotation: Rotation) {
         fun getNewLocation(loc: Location): Location = getRotatedLocation(rotationPoint, rotation, loc)
 
@@ -111,7 +119,7 @@ abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>,
 
         val onBoardEntities = onBoardEntities
         val cannons = ArrayList<Cannon>()
-        onBoardEntities.filter { it is Player }.forEach { p ->
+        Bukkit.getOnlinePlayers().filter { it is Player }.forEach { p ->
             SailingModule.cannonsAPI.getCannons(oldBlockStates.map { it.location }, p.uniqueId).forEach { cannons.add(it) }
         }
 
@@ -199,7 +207,9 @@ abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>,
 
         val onBoardEntities = onBoardEntities
         val cannons = ArrayList<Cannon>()
-        onBoardEntities.filter { it is Player }.forEach { p -> SailingModule.cannonsAPI.getCannons(oldBlockStates.map { it.location }, p.uniqueId).forEach { cannons.add(it) } }
+        Bukkit.getOnlinePlayers().forEach {
+            p -> cannons.addAll(SailingModule.cannonsAPI.getCannons(oldBlockStates.map { it.location }, p.uniqueId))
+        }
 
         blocks.clear()
         val massBlockUpdate: MassBlockUpdate = CraftMassBlockUpdate(WacCore.plugin, world)
@@ -209,6 +219,13 @@ abstract class SimpleShip(private val plugin: Plugin, blocks: Collection<Block>,
             val newBlock = world.getBlockAt(s.x + relativeX, s.y + relativeY, s.z + relativeZ)
             massBlockUpdate.setBlockState(newBlock.x, newBlock.y, newBlock.z, s)
             blocks.add(newBlock)
+        }
+
+        airBlocks.forEach {
+            it.x += relativeX
+            it.y += relativeY
+            it.z += relativeZ
+            massBlockUpdate.setBlock(it.x, it.y, it.z, AIR)
         }
 
         torches.forEach {

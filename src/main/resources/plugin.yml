@@ -2,7 +2,7 @@ name: wac-core
 version: @version@
 author: Ninjoh
 main: tk.martijn_heil.wac_core.WacCore
-depend: [Factions,ProtocolLib, Cannons]
+depend: [Factions,ProtocolLib]
 
 permissions:
   wac-core.*:

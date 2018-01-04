@@ -19,8 +19,10 @@
 package tk.martijn_heil.wac_core.craft
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 
 
 interface Craft {
     val location: Location
+    val onBoardEntities: Collection<Entity>
 }

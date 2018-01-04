@@ -42,6 +42,7 @@ class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, Aut
     private var world: World = sign.world
     private val protectedBlocks = ArrayList<Location>()
     private val blockProtector = BlockProtector(plugin)
+    val name: String?
 
     private val listener = object : Listener {
         @EventHandler(ignoreCancelled = true, priority = MONITOR)
@@ -76,6 +77,7 @@ class SimpleSail(private val plugin: Plugin, private var sign: Sign) : Sail, Aut
         blockProtector.protectedBlocks.add(sign.block.location)
         blockProtector.protectedBlocks.add(sign.block.getRelative((sign.data as org.bukkit.material.Sign).attachedFace).location)
 
+        name = if(sign.lines.size >= 2) sign.lines[1] else null
         isHoisted = false
     }
 

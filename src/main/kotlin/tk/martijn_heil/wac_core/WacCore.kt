@@ -22,6 +22,8 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
+import tk.martijn_heil.wac_core.command.CommandModule
 import tk.martijn_heil.wac_core.craft.SailingModule
 import tk.martijn_heil.wac_core.gameplay.GamePlayControlModule
 import tk.martijn_heil.wac_core.general.GeneralModule
@@ -81,15 +83,16 @@ class WacCore : JavaPlugin() {
             logger.info("Setting up ProtocolLib things..")
             protocolManager = ProtocolLibrary.getProtocolManager()
 
-            if(!debug) KingdomModule.init(this, PrefixedLogger("KingdomModuleLogger", "KingdomModule", logger))
-            //AutoSneakModule.init(protocolManager, this, PrefixedLogger("AutoSneakModuleLogger", "AutoSneakModule", logger))
+            if(!debug) KingdomModule.init(this, PrefixedLogger("WacCoreKingdomModuleLogger", "KingdomModule", logger))
+            AutoSneakModule.init(protocolManager, this, PrefixedLogger("WacCoreAutoSneakModuleLogger", "AutoSneakModule", logger))
             //GameModeSwitchingModule.init(this, PrefixedLogger("GameModeSwitchingModuleLogger", "GameModeSwitchingModule", logger))
-            GeneralModule.init(this, PrefixedLogger("GeneralModuleLogger", "GeneralModule", logger))
-            GamePlayControlModule.init(this, PrefixedLogger("GamePlayControlModuleLogger", "GamePlayControlModule", logger))
-            //CommandModule.init(this, logger)
-            SailingModule.init(this, PrefixedLogger("SailingModuleLogger", "SailingModule", logger))
+            GeneralModule.init(this, PrefixedLogger("WacCoreGeneralModuleLogger", "GeneralModule", logger))
+            GamePlayControlModule.init(this, PrefixedLogger("WacCoreGamePlayControlModuleLogger", "GamePlayControlModule", logger))
+            CommandModule.init(this, PrefixedLogger("WacCoreCommandModuleLogger", "CommandModule", logger))
+            SailingModule.init(this, PrefixedLogger("WacCoreSailingModuleLogger", "SailingModule", logger))
+            SprintRestrictionModule.init(this, PrefixedLogger("WacCoreSprintRestrictionModuleLogger", "SprintRestrictionModule", logger))
             //TemporaryModule.init(this)
-            if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
+            //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
         } catch(t: Throwable) {
             t.printStackTrace()
             throw t
@@ -98,7 +101,7 @@ class WacCore : JavaPlugin() {
 
     override fun onDisable() {
         SailingModule.close()
-        HackyModule.close()
+        //HackyModule.close()
     }
 
     companion object {
@@ -123,8 +126,7 @@ class WacCore : JavaPlugin() {
     enum class Permission(val str: String) {
         BYPASS__ITEM_LIMIT("wac-core.bypass.item-limit"),
         BYPASS__GAMEMODE_SWITCH_PENALTY("wac-core.bypass.gamemode-switch-penalty"),
-        GAMEMODE__SPECTATOR("wac-core.gamemode.spectator"),
-        BYPASS_OCEAN_BUILD_LIMITS("wac-core.bypass.ocean-build-limits");
+        BYPASS__OCEAN_BUILD_LIMITS("wac-core.bypass.ocean-build-limits");
 
         override fun toString() = str
     }

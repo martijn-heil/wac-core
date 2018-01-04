@@ -62,8 +62,13 @@ import java.util.logging.Logger
 TODO:
     Fix: Ship filling up with water if under water line.
  */
-open class SimpleSailingVessel protected constructor(protected val plugin: Plugin, protected val logger: Logger, blocks: Collection<Block>, rotationPoint: Location,
-                                                     override val sails: Collection<SimpleSail>, protected val rudder: SimpleRudder, protected var rowingSign: Sign, protected var rowingDirectionSign: Sign) : SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, AutoCloseable {
+open class SimpleSailingVessel protected constructor(protected val plugin: Plugin, protected val logger: Logger,
+                                                     blocks: Collection<Block>, rotationPoint: Location,
+                                                     override val sails: Collection<SimpleSail>,
+                                                     protected val rudder: SimpleRudder,
+                                                     protected var rowingSign: Sign,
+                                                     protected var rowingDirectionSign: Sign) :
+        SimpleShip(plugin, blocks, rotationPoint), HasSail, HasRudder, AutoCloseable {
     open protected var rowingSpeed = 1000
     open protected var normalMaxSpeed: Int = 10000                     // in metres per hour
     open protected var speedPerSquareMetreOfSail: Double = 0.0         // in metres per hour
@@ -127,7 +132,7 @@ open class SimpleSailingVessel protected constructor(protected val plugin: Plugi
             increaseZ = round(0.0 - (distancePerUpdate * sin(radians))).toInt()
         }
 
-    open protected var heading: Int = 0
+    override var heading: Int = 0
         set(value) {
             if (value == 360) throw IllegalArgumentException("360 degrees should be 0 degrees.")
             if (value < 0 || value > 360) throw IllegalArgumentException("Invalid number of degrees.")

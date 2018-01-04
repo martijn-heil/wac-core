@@ -20,5 +20,5 @@ package tk.martijn_heil.wac_core.craft.vessel
 
 
 interface HasRudder {
-
+    var heading: Int
 }

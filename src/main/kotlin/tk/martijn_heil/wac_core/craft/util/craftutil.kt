@@ -18,11 +18,18 @@
 
 package tk.martijn_heil.wac_core.craft.util
 
+import at.pavlov.cannons.cannon.Cannon
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.Material.AIR
+import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.entity.Entity
+import org.bukkit.event.player.PlayerTeleportEvent
 import tk.martijn_heil.wac_core.craft.Rotation
 import tk.martijn_heil.wac_core.craft.Rotation.CLOCKWISE
+import tk.martijn_heil.wac_core.craft.SailingModule
 import java.util.*
 
 
@@ -65,4 +72,50 @@ fun getRotatedLocation(output: Location, rotationPoint: Location, rotation: Rota
     output.x += newRelativeX
     output.y += loc.y
     output.z += newRelativeZ
+}
+
+
+fun detectAirBlocksBelowSeaLevel(world: World, box: BoundingBox): Collection<BlockPos> {
+    val minX = box.minX.toInt()
+    val maxX = box.maxX.toInt()
+    val minY = box.minY.toInt()
+    val minZ = box.minZ.toInt()
+    val maxZ = box.maxZ.toInt()
+    if(minY > world.seaLevel) return emptyList()
+
+    val list = ArrayList<BlockPos>()
+    for(x in minX..maxX) {
+        for(y in minY..world.seaLevel) {
+            for(z in minZ..maxZ) {
+                if(world.getBlockAt(x, y, z).type == AIR) list.add(BlockPos(x, y, z))
+            }
+        }
+    }
+    return list
+}
+
+fun detectCannons(locations: List<Location>): Collection<Cannon> {
+    val cannons = ArrayList<Cannon>()
+    Bukkit.getOnlinePlayers().forEach { p -> cannons.addAll(SailingModule.cannonsAPI.getCannons(locations, p.uniqueId)) }
+    return cannons
+}
+
+fun rotateEntities(entities: Collection<Entity>, rotationPoint: Location, rotation: Rotation) {
+    entities.forEach {
+        val loc = it.location
+        val newLoc = getRotatedLocation(rotationPoint, rotation, loc)
+
+        newLoc.yaw = if (rotation == Rotation.CLOCKWISE) loc.yaw + 90 else loc.yaw - 90
+        if (newLoc.yaw < -179) newLoc.yaw += 360
+        if (newLoc.yaw > 180) newLoc.yaw -= 360
+        newLoc.pitch = loc.pitch
+
+        // Correction for teleport behaviour
+        when (rotation) {
+            Rotation.CLOCKWISE -> newLoc.x += 1
+            Rotation.ANTICLOCKWISE -> newLoc.z += 1
+        }
+
+        it.teleport(newLoc, PlayerTeleportEvent.TeleportCause.PLUGIN)
+    }
 }
