@@ -22,6 +22,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityRegainHealthEvent
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.*
 import org.bukkit.plugin.Plugin
 import java.util.logging.Logger
 
@@ -43,7 +44,9 @@ object HealthModule: AutoCloseable {
     private object HealthModuleListener : Listener {
         @EventHandler(ignoreCancelled = true)
         fun onPlayerHealth(e: EntityRegainHealthEvent) {
-            if(e.entity is Player) e.isCancelled = true
+            if(e.entity is Player &&
+                    e.regainReason == REGEN || e.regainReason == SATIATED || e.regainReason == EATING)
+                e.isCancelled = true
         }
     }
 }
