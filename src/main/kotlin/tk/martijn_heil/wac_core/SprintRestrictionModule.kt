@@ -27,8 +27,8 @@ object SprintRestrictionModule : AutoCloseable {
 
     lateinit var plugin: Plugin
     lateinit var logger: Logger
-    val DECREASE_PER_TICK_BASE_VALUE = 1
-    val INCREASE_PER_TICK_BASE_VALUE = 1
+    val DECREASE_PER_SECOND_BASE_VALUE = 1
+    val INCREASE_PER_SECOND_BASE_VALUE = 1
     val playerMap = HashMap<UUID, Pair<Int /* increase */, Int /* decrease */>>()
     var task1: Int = 0
     var task2: Int = 0
@@ -41,13 +41,13 @@ object SprintRestrictionModule : AutoCloseable {
         task1 = plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
             plugin.server.onlinePlayers.forEach {
                 if(it.isSprinting && it.foodLevel > 0) {
-                    val decrease = playerMap[it.uniqueId]?.second ?: DECREASE_PER_TICK_BASE_VALUE
+                    val decrease = playerMap[it.uniqueId]?.second ?: DECREASE_PER_SECOND_BASE_VALUE
                     var newLevel = it.foodLevel - decrease
                     if(newLevel < 0) newLevel = 0 // prevent underflow
                     it.foodLevel = newLevel
                 }
             }
-        }, 0, 0)
+        }, 0, 20)
         if(task1 == -1) {
             logger.severe("Could not schedule first task.")
             return
@@ -57,13 +57,13 @@ object SprintRestrictionModule : AutoCloseable {
         task2 = plugin.server.scheduler.scheduleSyncRepeatingTask(plugin, {
             plugin.server.onlinePlayers.forEach {
                 if(!it.isSprinting && it.foodLevel < 20) {
-                    val increase = playerMap[it.uniqueId]?.first ?: INCREASE_PER_TICK_BASE_VALUE
+                    val increase = playerMap[it.uniqueId]?.first ?: INCREASE_PER_SECOND_BASE_VALUE
                     var newLevel = it.foodLevel + increase
                     if(newLevel > 20) newLevel = 20 // prevent overflow
                     it.foodLevel = newLevel
                 }
             }
-        }, 0, 0)
+        }, 0, 20)
         if(task2 == -1) {
             logger.severe("Could not schedule second task.")
             plugin.server.scheduler.cancelTask(task1)
