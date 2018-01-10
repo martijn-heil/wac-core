@@ -27,7 +27,7 @@ object SprintRestrictionModule : AutoCloseable {
 
     lateinit var plugin: Plugin
     lateinit var logger: Logger
-    val DECREASE_PER_SECOND_BASE_VALUE = 1
+    val DECREASE_PER_SECOND_BASE_VALUE = 2
     val INCREASE_PER_SECOND_BASE_VALUE = 1
     val playerMap = HashMap<UUID, Pair<Int /* increase */, Int /* decrease */>>()
     var task1: Int = 0

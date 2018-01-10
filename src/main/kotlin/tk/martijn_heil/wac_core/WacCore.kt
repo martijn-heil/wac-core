@@ -22,12 +22,11 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
-import tk.martijn_heil.wac_core.autosneak.AutoSneakModule
-import tk.martijn_heil.wac_core.command.CommandModule
 import tk.martijn_heil.wac_core.craft.SailingModule
 import tk.martijn_heil.wac_core.gameplay.GamePlayControlModule
 import tk.martijn_heil.wac_core.general.GeneralModule
 import tk.martijn_heil.wac_core.kingdom.KingdomModule
+import tk.martijn_heil.wac_core.namehiding.NameHidingModule
 import java.util.*
 import java.util.logging.Logger
 
@@ -84,14 +83,15 @@ class WacCore : JavaPlugin() {
             protocolManager = ProtocolLibrary.getProtocolManager()
 
             if(!debug) KingdomModule.init(this, PrefixedLogger("WacCoreKingdomModuleLogger", "KingdomModule", logger))
-            AutoSneakModule.init(protocolManager, this, PrefixedLogger("WacCoreAutoSneakModuleLogger", "AutoSneakModule", logger))
+            //AutoSneakModule.init(protocolManager, this, PrefixedLogger("WacCoreAutoSneakModuleLogger", "AutoSneakModule", logger))
             //GameModeSwitchingModule.init(this, PrefixedLogger("GameModeSwitchingModuleLogger", "GameModeSwitchingModule", logger))
             GeneralModule.init(this, PrefixedLogger("WacCoreGeneralModuleLogger", "GeneralModule", logger))
             GamePlayControlModule.init(this, PrefixedLogger("WacCoreGamePlayControlModuleLogger", "GamePlayControlModule", logger))
-            CommandModule.init(this, PrefixedLogger("WacCoreCommandModuleLogger", "CommandModule", logger))
+            //CommandModule.init(this, PrefixedLogger("WacCoreCommandModuleLogger", "CommandModule", logger))
             SailingModule.init(this, PrefixedLogger("WacCoreSailingModuleLogger", "SailingModule", logger))
             SprintRestrictionModule.init(this, PrefixedLogger("WacCoreSprintRestrictionModuleLogger", "SprintRestrictionModule", logger))
             HealthModule.init(this, PrefixedLogger("WacCoreHealthModuleLogger", "HealthModule", logger))
+            NameHidingModule.init(this, PrefixedLogger("WacCoreNameHidingModuleLogger", "NameHidingModule", logger), protocolManager)
             //TemporaryModule.init(this)
             //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
         } catch(t: Throwable) {
