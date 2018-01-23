@@ -37,12 +37,9 @@ import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Logger
 
-fun OfflinePlayer.getKingdom(): KingdomModule.Kingdom? = KingdomModule.Kingdom.fromFaction(MPlayer.get(this.uniqueId).faction)
-
-fun OfflinePlayer.setKingdom(newKingdom: KingdomModule.Kingdom?) {
-    if (newKingdom == null) return
-    MPlayer.get(this.uniqueId).faction = newKingdom.faction
-}
+var OfflinePlayer.kingdom: KingdomModule.Kingdom?
+    get() = KingdomModule.Kingdom.fromFaction(MPlayer.get(this.uniqueId).faction)
+    set(value) { MPlayer.get(this.uniqueId).faction = value?.faction ?: FactionColl.get().none }
 
 object KingdomModule {
     lateinit private var logger: Logger
@@ -74,7 +71,7 @@ object KingdomModule {
             get() {
                 val members = ArrayList<OfflinePlayer>()
                 for (offlinePlayer in Bukkit.getServer().offlinePlayers) {
-                    if (offlinePlayer.getKingdom() == this) members.add(offlinePlayer)
+                    if (offlinePlayer.kingdom == this) members.add(offlinePlayer)
                 }
                 return members
             }
@@ -133,7 +130,7 @@ object KingdomModule {
             if(e.hasBlock() && e.clickedBlock.state is Sign &&
                     (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {
 
-                if(e.player.getKingdom() != null) {
+                if(e.player.kingdom != null) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Je zit al in een kingdom! " +
                             "Als je per ongeluk het verkeerde kingdom bent gejoined, neem dan contact op met een staff lid.")
                     return
@@ -146,7 +143,7 @@ object KingdomModule {
                     return
                 }
 
-                e.player.setKingdom(kd)
+                e.player.kingdom = kd
                 e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.displayName + " gejoined. " +
                         "Doe " + ChatColor.RED + "/f home" + ChatColor.GOLD + " om naar de kingdom spawn te gaan!")
             }

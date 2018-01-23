@@ -20,8 +20,10 @@ package tk.martijn_heil.wac_core
 
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.entity.Player
+import tk.martijn_heil.wac_core.classes.PlayerClass
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.MessageFormat
@@ -41,20 +43,25 @@ fun getStringWithArgs(bundle: ResourceBundle, args: Array<Any>, msg: String): St
 
 fun getDefaultWorld(): World = Bukkit.getServer().worlds[0]
 
-//fun ensurePresenceInDatabase(offlinePlayer: OfflinePlayer) {
-//    // Check if player is registered in the database yet.
-//    var stmnt = WacCore.dbconn!!.prepareStatement("SELECT 1 FROM wac_core_players WHERE uuid=?")
-//    stmnt.setString(1, offlinePlayer.uniqueId.toString())
-//    val result = stmnt.executeQuery()
-//    if(!result.next()) { // player isn't yet present in the database.
-//        val stmnt2 = WacCore.dbconn!!.prepareStatement("INSERT INTO wac_core_players (uuid) VALUES(?)")
-//        stmnt2.setString(1, offlinePlayer.uniqueId.toString())
-//        stmnt2.executeUpdate()
-//        stmnt2.close()
-//    }
-//
-//    stmnt.close()
-//}
+fun UUID.toCompressedString() =
+        this.mostSignificantBits.toString(16) + this.leastSignificantBits.toString(16)
+
+fun ensurePresenceInDatabase(offlinePlayer: OfflinePlayer) {
+    // Check if player is registered in the database yet.
+    val stmnt = WacCore.dbconn!!.prepareStatement("SELECT 1 FROM wac_core_players WHERE uuid=?")
+    val uuid = offlinePlayer.uniqueId
+    stmnt.setString(1, uuid.toCompressedString())
+    val result = stmnt.executeQuery()
+    if(!result.next()) { // player isn't yet present in the database.
+        val stmnt2 = WacCore.dbconn!!.
+                prepareStatement("INSERT INTO wac_core_players (uuid, player_class) VALUES(?, '" + PlayerClass.INFANTRY.toString() + "')")
+        stmnt2.setString(1, offlinePlayer.uniqueId.toString())
+        stmnt2.executeUpdate()
+        stmnt2.close()
+    }
+
+    stmnt.close()
+}
 
 fun getPlayersInRadius(loc: Location, radius: Int): List<Player> {
     val players = ArrayList<Player>()

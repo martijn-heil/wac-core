@@ -20,13 +20,18 @@ package tk.martijn_heil.wac_core
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
+import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import tk.martijn_heil.wac_core.classes.PlayerClassModule
 import tk.martijn_heil.wac_core.craft.SailingModule
 import tk.martijn_heil.wac_core.gameplay.GamePlayControlModule
 import tk.martijn_heil.wac_core.general.GeneralModule
 import tk.martijn_heil.wac_core.kingdom.KingdomModule
 import tk.martijn_heil.wac_core.namehiding.NameHidingModule
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 import java.util.*
 import java.util.logging.Logger
 
@@ -41,41 +46,41 @@ class WacCore : JavaPlugin() {
             logger.fine("Saving default config..")
             saveDefaultConfig()
 
-//            logger.info("Migrating database if needed..")
-//            dbUrl = config.getString("db.url")
-//            dbUsername = config.getString("db.username")
-//            dbPassword = config.getString("db.password")
-//            // Storing the password in a char array doesn't improve much..
-//            // it's stored in plaintext in the "config" object anyway.. :/
-//
-//            // This is a hack, we use a custom classloader to replace Flyway's VersionPrinter class with
-//            // Our custom version of that class, which is located in the resources folder.
-//            // The main reason for this is that with Bukkit, Flyway was having classpath issues determining it's version.
-//            // Due to that the whole plugin crashed on startup.
-//            val hackyLoader = HackyClassLoader(this.classLoader)
-//            val cls = hackyLoader.loadClass("tk.martijn_heil.wac_core.HackyClass")
-//            val migrationResult = cls!!.getMethod("doStuff", String::class.java, String::class.java, String::class.java, ClassLoader::class.java).invoke(null, dbUrl, dbUsername, dbPassword, this.classLoader) as Boolean
-//            if(!migrationResult) {
-//                this.isEnabled = false
-//                return
-//            }
-//
-//            try {
-//                WacCore.dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
-//            } catch (ex: SQLException) {
-//                WacCore.logger.severe(ex.message)
-//                WacCore.logger.severe("Disabling plugin due to database error..")
-//                this.isEnabled = false
-//                return
-//            }
+            logger.info("Migrating database if needed..")
+            dbUrl = config.getString("db.url")
+            dbUsername = config.getString("db.username")
+            dbPassword = config.getString("db.password")
+            // Storing the password in a char array doesn't improve much..
+            // it's stored in plaintext in the "config" object anyway.. :/
+
+            // This is a hack, we use a custom classloader to replace Flyway's VersionPrinter class with
+            // Our custom version of that class, which is located in the resources folder.
+            // The main reason for this is that with Bukkit, Flyway was having classpath issues determining it's version.
+            // Due to that the whole plugin crashed on startup.
+            val hackyLoader = HackyClassLoader(this.classLoader)
+            val cls = hackyLoader.loadClass("tk.martijn_heil.wac_core.HackyClass")
+            val migrationResult = cls!!.getMethod("doStuff", String::class.java, String::class.java, String::class.java, ClassLoader::class.java).invoke(null, dbUrl, dbUsername, dbPassword, this.classLoader) as Boolean
+            if(!migrationResult) {
+                this.isEnabled = false
+                return
+            }
+
+            try {
+                WacCore.dbconn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
+            } catch (ex: SQLException) {
+                WacCore.logger.severe(ex.message)
+                WacCore.logger.severe("Disabling plugin due to database error..")
+                this.isEnabled = false
+                return
+            }
 
 
             messages = ResourceBundle.getBundle("messages.messages")
 
-//            logger.info("Ensuring database presence of all players currently online..")
-//            for (player in Bukkit.getServer().onlinePlayers) {
-//                ensurePresenceInDatabase(player)
-//            }
+            logger.info("Ensuring database presence of all players currently online..")
+            for (player in Bukkit.getServer().onlinePlayers) {
+                ensurePresenceInDatabase(player)
+            }
 
 
             logger.info("Setting up ProtocolLib things..")
@@ -92,6 +97,7 @@ class WacCore : JavaPlugin() {
             HealthModule.init(this, PrefixedLogger("WacCoreHealthModuleLogger", "HealthModule", logger))
             NameHidingModule.init(this, PrefixedLogger("WacCoreNameHidingModuleLogger", "NameHidingModule", logger), protocolManager)
             CrackshotHook.init(this, PrefixedLogger("WacCoreCrackShootHookLogger", "CrackShotHook", logger), protocolManager)
+            PlayerClassModule.init(this)
             //TemporaryModule.init(this)
             //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
         } catch (t: Throwable) {
@@ -107,16 +113,16 @@ class WacCore : JavaPlugin() {
 
     companion object {
 
-//        private lateinit var dbUrl: String
-//        private lateinit var dbUsername: String
-//        private lateinit var dbPassword: String
-//
-//        var dbconn: Connection? = null
-//            get() {
-//                if(field!!.isClosed) field = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
-//
-//                return field
-//            }
+        private lateinit var dbUrl: String
+        private lateinit var dbUsername: String
+        private lateinit var dbPassword: String
+
+        var dbconn: Connection? = null
+            get() {
+                if(field!!.isClosed) field = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)
+
+                return field
+            }
 
         lateinit var messages: ResourceBundle
         lateinit var logger: Logger

@@ -18,14 +18,47 @@
 
 package tk.martijn_heil.wac_core.classes
 
+import org.bukkit.OfflinePlayer
 import org.bukkit.plugin.Plugin
+import tk.martijn_heil.wac_core.WacCore
+import tk.martijn_heil.wac_core.toCompressedString
+import java.util.*
 
+private val cache = HashMap<UUID, PlayerClass>()
 
-object PlayerClassModule {
+var OfflinePlayer.playerClass: PlayerClass
+    get() {
+        val tmp = cache[this.uniqueId]
+        if(tmp != null) {
+            return tmp
+        }
+        else {
+            val stmnt = WacCore.dbconn!!.prepareStatement("SELECT 1 FROM wac_core_players WHERE uuid=?")
+            stmnt.setString(1, this.uniqueId.toCompressedString())
+            val result = stmnt.executeQuery()
+            if(!result.next()) throw IllegalStateException("Player(uuid: '" + this.uniqueId.toString() + "') not found in database.")
+            val playerClass = PlayerClass.valueOf(result.getString("player_class"))
+            stmnt.close()
+            cache[this.uniqueId] = playerClass
+            return playerClass
+        }
+    }
+    set(value) { cache[this.uniqueId] = value }
+
+object PlayerClassModule : AutoCloseable {
     lateinit var plugin: Plugin
 
     fun init(plugin: Plugin) {
         this.plugin = plugin
+    }
 
+    override fun close() {
+        cache.forEach {
+            val stmnt = WacCore.dbconn!!.prepareStatement("UPDATE wac_core_players SET player_class = ? WHERE uuid = ?")
+            stmnt.setString(1, it.value.toString())
+            stmnt.setString(2, it.key.toCompressedString())
+            stmnt.executeUpdate()
+            stmnt.close()
+        }
     }
 }
