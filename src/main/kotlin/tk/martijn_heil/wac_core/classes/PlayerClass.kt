@@ -18,10 +18,10 @@
 
 package tk.martijn_heil.wac_core.classes
 
-import org.bukkit.entity.Player
-
-
-interface PlayerClass {
-    val playerClassName: String
-    fun giveKit(p: Player)
+enum class PlayerClass {
+    RECON,
+    INFANTRY,
+    TANKER,
+    PILOT,
+    ENGINEER,
 }

@@ -78,23 +78,23 @@ class WacCore : JavaPlugin() {
 //            }
 
 
-
             logger.info("Setting up ProtocolLib things..")
             protocolManager = ProtocolLibrary.getProtocolManager()
 
-            if(!debug) KingdomModule.init(this, PrefixedLogger("WacCoreKingdomModuleLogger", "KingdomModule", logger))
-            //AutoSneakModule.init(protocolManager, this, PrefixedLogger("WacCoreAutoSneakModuleLogger", "AutoSneakModule", logger))
-            //GameModeSwitchingModule.init(this, PrefixedLogger("GameModeSwitchingModuleLogger", "GameModeSwitchingModule", logger))
+            if (!debug) KingdomModule.init(this, PrefixedLogger("WacCoreKingdomModuleLogger", "KingdomModule", logger))
             GeneralModule.init(this, PrefixedLogger("WacCoreGeneralModuleLogger", "GeneralModule", logger))
             GamePlayControlModule.init(this, PrefixedLogger("WacCoreGamePlayControlModuleLogger", "GamePlayControlModule", logger))
+            CustomResourcePackModule.init(this, PrefixedLogger("WacCoreCustomResourcePackModule", "CustomResourcePackModule", logger))
             //CommandModule.init(this, PrefixedLogger("WacCoreCommandModuleLogger", "CommandModule", logger))
+            //GameModeSwitchingModule.init(this, PrefixedLogger("GameModeSwitchingModuleLogger", "GameModeSwitchingModule", logger))
             SailingModule.init(this, PrefixedLogger("WacCoreSailingModuleLogger", "SailingModule", logger))
             SprintRestrictionModule.init(this, PrefixedLogger("WacCoreSprintRestrictionModuleLogger", "SprintRestrictionModule", logger))
             HealthModule.init(this, PrefixedLogger("WacCoreHealthModuleLogger", "HealthModule", logger))
             NameHidingModule.init(this, PrefixedLogger("WacCoreNameHidingModuleLogger", "NameHidingModule", logger), protocolManager)
+            CrackshotHook.init(this, PrefixedLogger("WacCoreCrackShootHookLogger", "CrackShotHook", logger), protocolManager)
             //TemporaryModule.init(this)
             //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
-        } catch(t: Throwable) {
+        } catch (t: Throwable) {
             t.printStackTrace()
             throw t
         }

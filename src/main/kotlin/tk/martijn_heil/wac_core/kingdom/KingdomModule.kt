@@ -37,6 +37,12 @@ import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Logger
 
+fun OfflinePlayer.getKingdom(): KingdomModule.Kingdom? = KingdomModule.Kingdom.fromFaction(MPlayer.get(this.uniqueId).faction)
+
+fun OfflinePlayer.setKingdom(newKingdom: KingdomModule.Kingdom?) {
+    if (newKingdom == null) return
+    MPlayer.get(this.uniqueId).faction = newKingdom.faction
+}
 
 object KingdomModule {
     lateinit private var logger: Logger
@@ -50,13 +56,6 @@ object KingdomModule {
 
         logger.info("Registering event listeners..")
         plugin.server.pluginManager.registerEvents(SignListener, plugin)
-    }
-
-    fun getKingdom(p: OfflinePlayer): Kingdom? = Kingdom.fromFaction(MPlayer.get(p.uniqueId).faction)
-
-    fun setKingdom(p: OfflinePlayer, newKingdom: Kingdom?) {
-        if (newKingdom == null) return
-        MPlayer.get(p.uniqueId).faction = newKingdom.faction
     }
 
 
@@ -75,7 +74,7 @@ object KingdomModule {
             get() {
                 val members = ArrayList<OfflinePlayer>()
                 for (offlinePlayer in Bukkit.getServer().offlinePlayers) {
-                    if (getKingdom(offlinePlayer) == this) members.add(offlinePlayer)
+                    if (offlinePlayer.getKingdom() == this) members.add(offlinePlayer)
                 }
                 return members
             }
@@ -134,7 +133,7 @@ object KingdomModule {
             if(e.hasBlock() && e.clickedBlock.state is Sign &&
                     (e.clickedBlock.state as Sign).getLine(0) == ChatColor.DARK_RED.toString() + ChatColor.MAGIC + "[JoinKingdom]") {
 
-                if(KingdomModule.getKingdom(e.player) != null) {
+                if(e.player.getKingdom() != null) {
                     e.player.sendMessage(ChatColor.RED.toString() + "Je zit al in een kingdom! " +
                             "Als je per ongeluk het verkeerde kingdom bent gejoined, neem dan contact op met een staff lid.")
                     return
@@ -147,7 +146,7 @@ object KingdomModule {
                     return
                 }
 
-                KingdomModule.setKingdom(e.player, kd)
+                e.player.setKingdom(kd)
                 e.player.sendMessage(ChatColor.GOLD.toString() + "Je bent " + kd.displayName + " gejoined. " +
                         "Doe " + ChatColor.RED + "/f home" + ChatColor.GOLD + " om naar de kingdom spawn te gaan!")
             }
