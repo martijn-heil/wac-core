@@ -36,19 +36,6 @@ import java.util.logging.Logger
 
 
 class GeneralListener(val logger: Logger, val plugin: Plugin) : Listener {
-
-//    private val clearedChunks = HashSet<Int>()
-//
-//    init {
-//        logger.info("Adding all cleared chunks in the database to the in-memory cache..")
-//        val stmnt = WacCore.dbconn!!.prepareStatement("SELECT * FROM wac_core_cleared_chunks")
-//        val result = stmnt.executeQuery()
-//        while(result.next()) {
-//            clearedChunks.add(result.getInt("coordinates"))
-//        }
-//    }
-
-
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerLogin(e: PlayerJoinEvent) {
         logger.fine("Ensuring that " + e.player.name + " is present in database..")
@@ -87,45 +74,4 @@ class GeneralListener(val logger: Logger, val plugin: Plugin) : Listener {
             }
         }
     }
-
-//    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-//    fun onChunkLoad(chunkPropagateSkylightOcclusion: ChunkLoadEvent) {
-//        if(!clearedChunks.contains(encodeChunkCoords(chunkPropagateSkylightOcclusion.chunk.x, chunkPropagateSkylightOcclusion.chunk.z))) {
-//            logger.info("Clearing chunk.. (x: " + chunkPropagateSkylightOcclusion.chunk.x + ", z: " + chunkPropagateSkylightOcclusion.chunk.z + ")")
-//            clearChunk(chunkPropagateSkylightOcclusion.chunk)
-//
-//            val encoded = encodeChunkCoords(chunkPropagateSkylightOcclusion.chunk.x, chunkPropagateSkylightOcclusion.chunk.z)
-//            clearedChunks.add(encoded)
-//
-//            @Suppress("DEPRECATION")
-//            plugin.server.scheduler.scheduleAsyncDelayedTask(plugin, {
-//                val stmnt = WacCore.dbconn!!.prepareStatement("INSERT INTO wac_core_cleared_chunks VALUES(?)")
-//                stmnt.setInt(1, encoded)
-//                stmnt.executeUpdate()
-//            }, 0)
-//        }
-//    }
-
-//    private fun encodeChunkCoords(x: Int, z: Int): Int {
-//        return z or (x shl 16)
-//    }
-//
-//    private fun decodeChunkCoords(data: Int): Pair<Int, Int> {
-//        val x = data ushr 16
-//        val z = data or 0b00000000000000001111111111111111
-//        return Pair(x, z)
-//    }
-//
-//    private fun clearChunk(chunk: Chunk) {
-//        for(y in 0..255) {
-//            for(x in 0..15) {
-//                for(z in 0..15) {
-//                    val block = chunk.getBlock(x, y, z)
-//                    if(block.state is InventoryHolder) {
-//                        (block.state as InventoryHolder).inventory.clear()
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
