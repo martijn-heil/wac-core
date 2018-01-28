@@ -37,7 +37,7 @@ import java.util.logging.Logger
 
 
 class WacCore : JavaPlugin() {
-    val debug = true
+    val debug = false
 
     override fun onEnable() {
         try {
@@ -99,7 +99,7 @@ class WacCore : JavaPlugin() {
             CrackshotHook.init(this, PrefixedLogger("WacCoreCrackShootHookLogger", "CrackShotHook", logger), protocolManager)
             PlayerClassModule.init(this)
             //TemporaryModule.init(this)
-            //if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
+            if(!debug) HackyModule.init(PrefixedLogger("HackyModuleLogger", "HackyModule", logger))
         } catch (t: Throwable) {
             t.printStackTrace()
             throw t
@@ -108,7 +108,8 @@ class WacCore : JavaPlugin() {
 
     override fun onDisable() {
         SailingModule.close()
-        //HackyModule.close()
+        HackyModule.close()
+        PlayerClassModule.close()
     }
 
     companion object {
