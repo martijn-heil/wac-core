@@ -25,4 +25,5 @@ enum class PlayerClass {
     PILOT,
     ENGINEER,
     CIVILIAN,
+    PARATROOPER,
 }
