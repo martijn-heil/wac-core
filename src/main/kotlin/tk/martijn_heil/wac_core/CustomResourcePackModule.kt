@@ -30,8 +30,8 @@ import java.util.*
 import java.util.logging.Logger
 
 object CustomResourcePackModule {
-    lateinit private var plugin: Plugin
-    lateinit private var logger: Logger
+    private lateinit var plugin: Plugin
+    private lateinit var logger: Logger
     private val list = HashSet<Player>()
 
     fun init(plugin: Plugin, logger: Logger) {

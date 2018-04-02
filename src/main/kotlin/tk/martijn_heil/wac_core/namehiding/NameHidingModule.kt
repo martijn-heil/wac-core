@@ -33,14 +33,14 @@ import java.util.*
 import java.util.logging.Logger
 
 object NameHidingModule {
-    lateinit private var plugin: Plugin
-    lateinit private var logger: Logger
-    lateinit private var server: Server
-    lateinit private var protocolManager: ProtocolManager
+    private lateinit var plugin: Plugin
+    private lateinit var logger: Logger
+    private lateinit var server: Server
+    private lateinit var protocolManager: ProtocolManager
 
     private val TEAM_HIDDEN_NAME = "name_hidden"
 
-    lateinit private var team_hidden: Team
+    private lateinit var team_hidden: Team
     private val shownPlayers = HashMap<Player, MutableList<Player>>()
 
     fun init(plugin: Plugin, logger: Logger, protocolManager: ProtocolManager) {
@@ -98,7 +98,7 @@ object NameHidingModule {
         @EventHandler(ignoreCancelled = true)
         fun onPlayerJoin(e: PlayerJoinEvent) {
             team_hidden.addEntry(e.player.name)
-            shownPlayers.put(e.player, ArrayList())
+            shownPlayers[e.player] = ArrayList()
         }
     }
 }
